@@ -1,8 +1,7 @@
-﻿namespace WebBank.AppCore.Entities
+﻿namespace WebBank.AppCore.Entities;
+
+public class Town
 {
-    public class Town
-    {
-        public int Id { get; set; }
-        public required string Name { get; set; }
-    }
+    public int Id { get; set; }
+    public required string Name { get; set; }
 }
