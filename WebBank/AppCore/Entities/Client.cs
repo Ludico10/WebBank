@@ -29,5 +29,6 @@
         public bool IsPensioner { get; set; }
         public bool IsConscript { get; set; }
         public int? MonthlyIncome { get; set; }
+        public bool IsActive { get; set; }
     }
 }

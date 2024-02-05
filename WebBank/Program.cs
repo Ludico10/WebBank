@@ -1,7 +1,13 @@
+using WebBank.AppCore.Interfaces;
+using WebBank.AppCore.Services;
+using WebBank.Infrastructure.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddDbContext<MySQLContext>();
+builder.Services.AddScoped<IClientService, ClientService>();
 
 var app = builder.Build();
 
