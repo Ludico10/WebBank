@@ -9,17 +9,21 @@ namespace WebBank.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
+        private readonly MySQLContext _context;
+        private readonly IClientService _clientService;
 
-        public List<Client> Clients { get; private set; }
+        public List<Client> Clients { get; private set; } = [];
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(MySQLContext context, IClientService clientService, ILogger<IndexModel> logger)
         {
             _logger = logger;
+            _context = context;
+            _clientService = clientService;
         }
 
-        public void OnGet(MySQLContext context, IClientService clientService, int pageNumber)
+        public void OnGet()
         {
-            Clients = clientService.GetClientsOnPage(context, pageNumber).Result.ToList();
+            Clients = _clientService.GetClientsOnPage(_context, 0).Result.ToList();
         }
     }
 }
