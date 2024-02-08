@@ -6,12 +6,24 @@
 
 <div class="text-center">
     <h2>Список пользователей</h2>
-    <p><a href="/Create">Добавить пользователя</a></p>
     <table>
-        <tr><th>Имя</th><th>Возраст</th></tr>
+        <tr><th>Имя</th><th>Фамилия</th></tr>
         @foreach (var client in Model.Clients)
         {
-            <tr><td>@client.Name</td><td>@client.Surname</td></tr>
+            <tr>
+                <td>@client.Name</td>
+                <td>@client.Surname</td>
+                <td>
+                    <form method="post">
+                        <a asp-page="Edit" asp-route-id="@client.Id">Изменить</a>
+                        <button type="submit" asp-page-handler="delete" asp-route-id="@client.Id">
+                            Удалить
+                        </button>
+                    </form>
+                </td>
+            </tr>
         }
     </table>
+
+    <p><a href="/Create">Добавить пользователя</a></p>
 </div>
