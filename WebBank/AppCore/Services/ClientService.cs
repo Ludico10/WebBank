@@ -14,15 +14,25 @@ namespace WebBank.AppCore.Services
 
         public void ChangeClient(MySQLContext context, Client client)
         {
+            client.IsActive = true;
             context.Update(client);
-            context.SaveChangesAsync();
+            context.SaveChanges();
         }
 
         public void AddClient(MySQLContext context, Client client)
         {
+            client.IsActive = true;
             context.Clients.Add(client);
-            context.SaveChangesAsync();
+            context.SaveChanges();
         }
+
+        public async Task<Client?> GetClientById(MySQLContext context, int id) 
+        {
+            return await context.Clients.Where(c => c.Id == id)
+                                        .Include(c => c.Citizenships)
+                                        .FirstOrDefaultAsync();
+        }
+
 
         public async Task<IEnumerable<Client>> GetClientsOnPage(MySQLContext context, int pageNumber, int itemsOnPage)
         {

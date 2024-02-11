@@ -10,5 +10,6 @@ namespace WebBank.AppCore.Interfaces
         public void DeleteClient(MySQLContext context, int id);
         public void AddClient(MySQLContext context, Client client);
         public void ChangeClient(MySQLContext context, Client client);
+        public Task<Client?> GetClientById(MySQLContext context, int id);
     }
 }

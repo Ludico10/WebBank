@@ -6,23 +6,17 @@ using WebBank.Infrastructure.Data;
 
 namespace WebBank.Pages
 {
-    public class IndexModel : PageModel
+    public class IndexModel(MySQLContext context, IClientService clientService, ILogger<IndexModel> logger) : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
-        private readonly MySQLContext _context;
-        private readonly IClientService _clientService;
+        private readonly ILogger<IndexModel> _logger = logger;
+        private readonly MySQLContext _context = context;
+        private readonly IClientService _clientService = clientService;
 
-        private const int itemsOnPage = 15;
+        private const int itemsOnPage = 1;
 
         public List<Client> Clients { get; private set; } = [];
         public int PagesCount { get; private set; } = 1;
-
-        public IndexModel(MySQLContext context, IClientService clientService, ILogger<IndexModel> logger)
-        {
-            _logger = logger;
-            _context = context;
-            _clientService = clientService;
-        }
+        public int PageNumber { get; set; }
 
         public IActionResult OnPostDelete(int id)
         {
@@ -32,6 +26,7 @@ namespace WebBank.Pages
 
         public IActionResult OnGet(int pageNumber = 1)
         {
+            PageNumber = pageNumber;
             PagesCount = (int)Math.Ceiling((double)_clientService.GetClientsCount(_context).Result / itemsOnPage);
             if (pageNumber <= PagesCount)
             {

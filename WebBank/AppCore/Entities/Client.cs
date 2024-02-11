@@ -12,7 +12,6 @@ public class Client
     public required string PassportSeries { get; set; }
     public required string PassportNumber { get; set; }
     public required string IssuePlace { get; set; }
-    public required string IssueNumber { get; set; }
     public required DateTime IssueDate { get; set; }
     public required string IdentificationNumber { get; set; }
     public required string BirthPlace { get; set; }

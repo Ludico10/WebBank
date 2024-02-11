@@ -1,0 +1,124 @@
+﻿@page "{id:int?}"
+@using WebBank.AppCore.Entities
+@model WebBank.Pages.EditModel
+ 
+<h2>Редактирование пользователя</h2>
+  
+<form method="post">
+    <input name="id" value="@Model.Client?.Id" type="hidden" />
+    <p>
+        <label>Имя</label><label>*</label><br />
+        <input name="name" value="@Model.Client?.Name" />
+    </p>
+    <p>
+        <label>Фамилия</label><label>*</label><br />
+        <input name="surname" value="@Model.Client?.Surname" />
+    </p>
+    <p>
+        <label>Отчество</label><label>*</label><br />
+        <input name="patronymic" value="@Model.Client?.Patronymic" />
+    </p>
+    <p>
+        <label>Дата рождения</label><label>*</label><br />
+        <input type="date" name="birthday" value="@string.Format("{0:yyyy-MM-dd}", Model.Client?.Birthday)" />
+    </p>
+    <p>
+        <label>Пол</label><label>*</label><br />
+        @Html.RadioButton("gender", Gender.Male, Model.Client?.Gender == Gender.Male)
+        <label>Мужской</label><br />
+        @Html.RadioButton("gender", Gender.Female, Model.Client?.Gender == Gender.Female)
+        <label>Женский</label>
+    </p>
+    <p>
+        <label>Серия и номер паспорта</label><label>*</label><br />
+        <input name="passportSeries" value="@Model.Client?.PassportSeries" />
+        <input name="passportNumber" value="@Model.Client?.PassportNumber" type="number" />
+    </p>
+    <p>
+        <label>Место выдачи паспорта</label><label>*</label><br />
+        <textarea name="issuePlace">@Model.Client?.IssuePlace</textarea>
+    </p>
+    <p>
+        <label>Дата выдачи пасспорта</label><label>*</label><br />
+        <input type="date" name="issueDate" value="@string.Format("{0:yyyy-MM-dd}", Model.Client?.IssueDate)" />
+    </p>
+    <p>
+        <label>Идентификационный номер</label><label>*</label><br />
+        <input name="identificationNumber" value="@Model.Client?.IdentificationNumber" />
+    </p>
+    <p>
+        <label>Место рождения</label><label>*</label><br />
+        <textarea name="issuePlace" asp-for="@Model.BirthPlace">@Model.BirthPlace</textarea>
+    </p>
+    <p>
+        <label>Город проживания</label><label>*</label><br />
+        <select asp-items="Model.Towns"></select>
+    </p>
+    <p>
+        <label>Адрес проживания</label><label>*</label><br />
+        <textarea name="address">@Model.Client?.Address</textarea>
+    </p>
+    <p>
+        <label>Мобильный телефон</label><br />
+        <input name="mobilePhone" value="@Model.Client?.MobilePhone" />
+    </p>
+    <p>
+        <label>Домашний телефон</label><br />
+        <input name="homePhone" value="@Model.Client?.HomePhone" />
+    </p>
+    <p>
+        <label>Адрес электронной почты</label><br />
+        <input name="email" value="@Model.Client?.Email" />
+    </p>
+    <p>
+        <label>Место работы</label><br />
+        <textarea name="workPlace"> @Model.Client?.WorkPlace </textarea>
+    </p>
+    <p>
+        <label>Занимаемая должность</label><br />
+        <input name="workPosition" value="@Model.Client?.WorkPosition" />
+    </p>
+    <p>
+        <label>Город регистрации</label><label>*</label><br />
+        <select asp-items="Model.Towns"></select>
+    </p>
+    <p>
+        <label>Адрес регистрации</label><label>*</label><br />
+        <textarea name="registrationAddress"> @Model.Client?.RegistrationAddress </textarea>
+    </p>
+    <p>
+        <label>Семейное положение</label><label>*</label><br />
+        <select asp-items="Model.FamilyStatuses"></select>
+    </p>
+    <p>
+        <label>Группа здоровья</label><label>*</label><br />
+        <select asp-items="Model.DisabilityGroups"></select>
+    </p>
+    <p>
+        <label>
+            <input name="pensioner" value="@Model.Client?.IsPensioner" type="checkbox" />
+            Пенсионер
+        </label>
+    </p>
+    <p>
+        <label>
+            <input name="conscript" value="@Model.Client?.IsConscript" type="checkbox" />
+            Военнообязанный
+        </label>
+    </p>
+    <p>
+        <label>Ежемесячная заработная плата</label><br />
+        <input name="registrationAddress" value="@Model.Client?.MonthlyIncome" type="number" />
+    </p>
+    <p>
+        <label>Гражданство</label><label>*</label><br />
+        @foreach (var citizenship in Model.Citizenships)
+        {
+            <label>
+                @Html.CheckBox("citizenship", isChecked: !Model.Client?.Citizenships.TrueForAll(c => c.Id != citizenship.Id), citizenship)
+                @citizenship.Name
+            </label><br />
+        }
+    </p>
+    <input type="submit" value="Сохранить" />
+</form>

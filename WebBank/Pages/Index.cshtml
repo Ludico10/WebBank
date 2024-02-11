@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{pageNumber:int?}"
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -25,5 +25,48 @@
         }
     </table>
 
-    <p><a href="/Create">Добавить пользователя</a></p>
+    <p>
+        <a href="/Index/1">1</a>
+        @if(Model.PagesCount > 7)
+        {
+            if (Model.PageNumber > 4)
+            {
+                <label>...</label>
+                if (Model.PageNumber < Model.PagesCount - 3)
+                {
+                    for (int i = -1; i <= 1; i++)
+                    {
+                        <a href="/Index/@(i + Model.PageNumber)">@(i + Model.PageNumber)</a>
+                    }
+                    <label>...</label>
+                }
+                else
+                {
+                    for (int i = Model.PagesCount - 4; i < Model.PagesCount; i++)
+                    {
+                        <a href="/Index/@i">@i</a>
+                    }
+                }
+            }
+            else
+            {
+                <a href="/Index/2">2</a>
+                for (int i = 3; i <= 5; i++)
+                {
+                    <a href="/Index/@i">@i</a>
+                }
+                <label>...</label>
+            }
+            <a href="/Index/@Model.PagesCount">@Model.PagesCount</a>
+        }
+        else
+        {
+            for (int i = 2; i <= Model.PagesCount; i++)
+            {
+                <a href="/Index/@i">@i</a>
+            }
+        }
+    </p>
+
+    <p><a href="/Edit">Добавить пользователя</a></p>
 </div>
