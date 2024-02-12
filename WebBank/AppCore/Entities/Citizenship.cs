@@ -4,5 +4,5 @@ public class Citizenship
 {
     public int Id { get; set; }
     public required string Name { get; set; }
-    public List<Client> Clients { get; set; } = [];
+    public virtual List<Client> Clients { get; set; } = [];
 }

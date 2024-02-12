@@ -15,20 +15,20 @@ public class Client
     public required DateTime IssueDate { get; set; }
     public required string IdentificationNumber { get; set; }
     public required string BirthPlace { get; set; }
-    public required Town Town { get; set; }
+    public required virtual Town Town { get; set; }
     public required string Address { get; set; }
     public string? HomePhone { get; set; }
     public string? MobilePhone { get; set; }
     public string? Email { get; set; }
     public string? WorkPlace { get; set; }
     public string? WorkPosition { get; set; }
-    public required Town RegistrationTown { get; set; }
+    public required virtual Town RegistrationTown { get; set; }
     public required string RegistrationAddress { get; set; }
-    public required FamilyStatus FamilyStatus { get; set; }
-    public required DisabilityGroup DisabilityGroup { get; set; }
+    public required virtual FamilyStatus FamilyStatus { get; set; }
+    public required virtual DisabilityGroup DisabilityGroup { get; set; }
     public required bool IsPensioner { get; set; }
     public required bool IsConscript { get; set; }
     public int? MonthlyIncome { get; set; }
     public required bool IsActive { get; set; }
-    public List<Citizenship> Citizenships { get; set; } = [];
+    public virtual List<Citizenship> Citizenships { get; set; } = [];
 }

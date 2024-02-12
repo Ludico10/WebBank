@@ -5,7 +5,7 @@ namespace WebBank.Infrastructure.Data;
 
 public class MySQLContext : DbContext
 {
-    public readonly string dbPath = "server=localhost;database=bank_db;user=root;password=Phabletik1044";
+    public readonly string dbPath = "server=localhost;database=bank_db;user=root;password=admin";
 
     public MySQLContext()
     {
@@ -20,7 +20,9 @@ public class MySQLContext : DbContext
     public DbSet<FamilyStatus> FamilyStatuses => Set<FamilyStatus>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseMySQL(dbPath);
+        => optionsBuilder
+            .UseMySQL(dbPath)
+            .UseLazyLoadingProxies();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

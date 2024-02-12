@@ -6,13 +6,54 @@
 
 <div class="text-center">
     <h2>Список пользователей</h2>
-    <table>
-        <tr><th>Имя</th><th>Фамилия</th></tr>
+    <table border="1">
+        <tr>
+            <th>ФИО</th>
+            <th>День рождения</th>
+            <th>Пол</th>
+            <th>Номер паспорта</th>
+            <th>Идентификационный номер</th>
+            <th>Место выдачи</th>
+            <th>Дата выдачи</th>
+            <th>Место рождения</th>
+            <th>Адрес проживания</th>
+            <th>Телефон (дом)</th>
+            <th>Телефон (моб)</th>
+            <th class="text-nowrap">e-mail</th>
+            <th>Место работы</th>
+            <th>Должность</th>
+            <th>Доход, <span class="text-nowrap">BYN/месяц</span></th>
+            <th>Адрес прописки</th>
+            <th>Семейное положение</th>
+            <th>Гражданство</th>
+            <th>Инвалидность</th>
+            <th>Пенсионер</th>
+            <th>Военнообязанный</th>
+        </tr>
         @foreach (var client in Model.Clients)
         {
             <tr>
-                <td>@client.Name</td>
-                <td>@client.Surname</td>
+                <td>@($"{client.Surname} {client.Name} {client.Patronymic}")</td>
+                <td>@client.Birthday.Date</td>
+                <td>@Enum.GetName(client.Gender.GetType(), client.Gender)</td>
+                <td>@(client.PassportSeries + client.PassportNumber)</td>
+                <td>@client.IdentificationNumber</td>
+                <td>@client.IssuePlace</td>
+                <td>@client.IssueDate.Date</td>
+                <td>@client.BirthPlace</td>
+                <td>@($"г.{client.Town.Name} {client.Address}")</td>
+                <td>@(client.HomePhone ?? "-")</td>
+                <td>@(client.MobilePhone ?? "-")</td>
+                <td>@(client.Email ?? "-")</td>
+                <td>@(client.WorkPlace ?? "-")</td>
+                <td>@(client.WorkPosition ?? "-")</td>
+                <td>@(client.MonthlyIncome == null ? "-" : client.MonthlyIncome / 100.0)</td>
+                <td>@($"г.{client.RegistrationTown.Name} {client.RegistrationAddress}")</td>
+                <td>@client.FamilyStatus.Name</td>
+                <td>@string.Join(", ", client.Citizenships.Select(c => c.Name))</td>
+                <td>@client.DisabilityGroup.Name</td>
+                <td>@(client.IsPensioner ? "Да" : "Нет")</td>
+                <td>@(client.IsConscript ? "Да" : "Нет")</td>
                 <td>
                     <form method="post">
                         <a asp-page="Edit" asp-route-id="@client.Id">Изменить</a>
@@ -27,7 +68,7 @@
 
     <p>
         <a href="/Index/1">1</a>
-        @if(Model.PagesCount > 7)
+        @if (Model.PagesCount > 7)
         {
             if (Model.PageNumber > 4)
             {
