@@ -26,10 +26,9 @@ namespace WebBank.AppCore.Services
             context.SaveChanges();
         }
 
-        public async Task<Client?> GetClientById(MySQLContext context, int id) 
+        public async Task<Client?> GetClientById(MySQLContext context, int id)
         {
             return await context.Clients.Where(c => c.Id == id)
-                                        .Include(c => c.Citizenships)
                                         .FirstOrDefaultAsync();
         }
 
@@ -37,7 +36,7 @@ namespace WebBank.AppCore.Services
         public async Task<IEnumerable<Client>> GetClientsOnPage(MySQLContext context, int pageNumber, int itemsOnPage)
         {
             return await context.Clients.OrderBy(c => c.Surname)
-                                        .Where(c => c.IsActive == true)
+                                        .Where(c => c.IsActive)
                                         .Skip(itemsOnPage * (pageNumber - 1))
                                         .Take(itemsOnPage).ToListAsync();
         }

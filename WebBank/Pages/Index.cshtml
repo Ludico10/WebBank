@@ -1,7 +1,6 @@
 ﻿@page "{pageNumber:int?}"
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
 }
 
 <div class="text-center">
@@ -34,12 +33,12 @@
         {
             <tr>
                 <td>@($"{client.Surname} {client.Name} {client.Patronymic}")</td>
-                <td>@client.Birthday.Date</td>
+                <td>@client.Birthday.ToString("dd.MM.yyyy")</td>
                 <td>@Enum.GetName(client.Gender.GetType(), client.Gender)</td>
                 <td>@(client.PassportSeries + client.PassportNumber)</td>
                 <td>@client.IdentificationNumber</td>
                 <td>@client.IssuePlace</td>
-                <td>@client.IssueDate.Date</td>
+                <td>@client.IssueDate.ToString("dd.MM.yyyy")</td>
                 <td>@client.BirthPlace</td>
                 <td>@($"г.{client.Town.Name} {client.Address}")</td>
                 <td>@(client.HomePhone ?? "-")</td>
@@ -55,19 +54,25 @@
                 <td>@(client.IsPensioner ? "Да" : "Нет")</td>
                 <td>@(client.IsConscript ? "Да" : "Нет")</td>
                 <td>
-                    <form method="post">
-                        <a asp-page="Edit" asp-route-id="@client.Id">Изменить</a>
-                        <button type="submit" asp-page-handler="delete" asp-route-id="@client.Id">
-                            Удалить
-                        </button>
-                    </form>
+                    <div class="parent">
+                        <form method="post">
+                            <a class="child" asp-page="Edit" asp-route-id="@client.Id">
+                                <img src="~/images/edit.png" alt="Изменить" class="icon" />
+                            </a>
+                            <button class="child no-border" type="submit" asp-page-handler="delete" asp-route-id="@client.Id">
+                                <img src="~/images/recycle-bin.png" alt="Удалить" class="icon" />
+                            </button>
+                        </form>
+                    </div>
+
                 </td>
             </tr>
         }
     </table>
-
-    <p>
-        <a href="/Index/1">1</a>
+    <hr />
+    <div class="pagination-container">
+        Страницы:
+        <a href="/Index/1" class=@(Model.PageNumber == 1 ? "disabled" : "")>1</a>
         @if (Model.PagesCount > 7)
         {
             if (Model.PageNumber > 4)
@@ -77,7 +82,7 @@
                 {
                     for (int i = -1; i <= 1; i++)
                     {
-                        <a href="/Index/@(i + Model.PageNumber)">@(i + Model.PageNumber)</a>
+                        <a href="/Index/@(i + Model.PageNumber)" class=@(Model.PageNumber == i + Model.PageNumber ? "disabled" : "")>@(i + Model.PageNumber)</a>
                     }
                     <label>...</label>
                 }
@@ -85,29 +90,31 @@
                 {
                     for (int i = Model.PagesCount - 4; i < Model.PagesCount; i++)
                     {
-                        <a href="/Index/@i">@i</a>
+                        <a href="/Index/@i" class=@(Model.PageNumber == i ? "disabled" : "")>@i</a>
                     }
                 }
             }
             else
             {
-                <a href="/Index/2">2</a>
+                <a href="/Index/2" class=@(Model.PageNumber == 2 ? "disabled" : "")>2</a>
                 for (int i = 3; i <= 5; i++)
                 {
-                    <a href="/Index/@i">@i</a>
+                    <a href="/Index/@i" class=@(Model.PageNumber == i ? "disabled" : "")>@i</a>
                 }
                 <label>...</label>
             }
-            <a href="/Index/@Model.PagesCount">@Model.PagesCount</a>
+            <a href="/Index/@Model.PagesCount" class=@(Model.PageNumber == Model.PagesCount ? "disabled" : "")>@Model.PagesCount</a>
         }
         else
         {
             for (int i = 2; i <= Model.PagesCount; i++)
             {
-                <a href="/Index/@i">@i</a>
+                <a href="/Index/@i" class=@(Model.PageNumber == i ? "disabled" : "")>@i</a>
             }
         }
-    </p>
-
-    <p><a href="/Edit">Добавить пользователя</a></p>
+    </div>
+    <hr />
+    <div>
+        <a href="/Edit" class="btn btn-outline-dark" role="button"> Добавить</a>
+    </div>
 </div>

@@ -12,7 +12,7 @@ namespace WebBank.Pages
         private readonly MySQLContext _context = context;
         private readonly IClientService _clientService = clientService;
 
-        private const int itemsOnPage = 1;
+        private const int itemsOnPage = 5;
 
         public List<Client> Clients { get; private set; } = [];
         public int PagesCount { get; private set; } = 1;
