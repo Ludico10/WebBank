@@ -35,7 +35,7 @@ namespace WebBank.Pages
             Citizenships = citizenshipService.GetAllCitizenships(_context).Result.ToList();
         }
 
-        public void OnGet(int? id)
+        public IActionResult OnGet(int? id)
         {
             if (id != null)
             {
@@ -44,7 +44,10 @@ namespace WebBank.Pages
                 {
                     BirthPlace = Client.BirthPlace;
                 }
+                else
+                    return RedirectToPage("Error");
             }
+            return Page();
         }
 
         public IActionResult OnPost(int? id)
