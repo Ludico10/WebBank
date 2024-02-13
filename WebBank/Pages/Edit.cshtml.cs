@@ -29,17 +29,17 @@ namespace WebBank.Pages
             _context = context;
             _clientService = clientService;
 
-            Towns = new SelectList(townService.GetAllTowns(_context).Result, "Id", "Name");
-            FamilyStatuses = new SelectList(familyService.GetAllStatuses(_context).Result, "Id", "Name");
-            DisabilityGroups = new SelectList(disabilityService.GetAllGroups(_context).Result, "Id", "Name");
-            Citizenships = citizenshipService.GetAllCitizenships(_context).Result.ToList();
+            Towns = new SelectList(townService.GetAll().Result, "Id", "Name");
+            FamilyStatuses = new SelectList(familyService.GetAll().Result, "Id", "Name");
+            DisabilityGroups = new SelectList(disabilityService.GetAll().Result, "Id", "Name");
+            Citizenships = citizenshipService.GetAll().Result.ToList();
         }
 
         public IActionResult OnGet(int? id)
         {
             if (id != null)
             {
-                Client = _clientService.GetClientById(_context, id.Value).Result;
+                Client = _clientService.Find(id.Value).Result;
                 if (Client != null)
                 {
                     BirthPlace = Client.BirthPlace;
@@ -57,11 +57,11 @@ namespace WebBank.Pages
                 Client.BirthPlace = BirthPlace;
                 if (id != null)
                 {
-                    _clientService.ChangeClient(_context, Client);
+                    _clientService.Edit(Client);
                 }
                 else
                 {
-                    _clientService.AddClient(_context, Client);
+                    _clientService.Add(Client);
                 }
 
                 return RedirectToPage("Index");

@@ -9,7 +9,7 @@ public class MySQLContext : DbContext
 
     public MySQLContext()
     {
-        Database.EnsureDeleted();
+        //Database.EnsureDeleted();
         Database.EnsureCreated();
     }
 
@@ -26,6 +26,7 @@ public class MySQLContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+#if DEBUG
         modelBuilder.Entity<Town>().HasData(
         [
             new() { Id = 1, Name = "Минск" },
@@ -292,5 +293,6 @@ public class MySQLContext : DbContext
                     new { ClientsId = 8, CitizenshipsId = 1 },
                     new { ClientsId = 9, CitizenshipsId = 1 }
                 ]));
+#endif
     }
 }

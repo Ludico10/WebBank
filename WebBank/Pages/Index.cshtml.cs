@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebBank.AppCore.Entities;
 using WebBank.AppCore.Interfaces;
 using WebBank.Infrastructure.Data;
+using static System.Math;
 
 namespace WebBank.Pages
 {
@@ -18,23 +19,25 @@ namespace WebBank.Pages
         public int PagesCount { get; private set; } = 1;
         public int PageNumber { get; set; }
 
-        public IActionResult OnPostDelete(int id)
+        public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            _clientService.DeleteClient(_context, id);
+            await _clientService.Delete(id);
             return RedirectToPage();
         }
 
-        public IActionResult OnGet(int pageNumber = 1)
+        public async Task<IActionResult> OnGetAsync(int pageNumber = 1)
         {
             PageNumber = pageNumber;
-            PagesCount = (int)Math.Ceiling((double)_clientService.GetClientsCount(_context).Result / itemsOnPage);
-            if (pageNumber <= PagesCount)
+            var clientsCount = await _clientService.CountClients();
+            PagesCount = (int)Max(Ceiling((double)clientsCount / itemsOnPage), 1);
+
+            if (pageNumber <= 0 || pageNumber > PagesCount)
             {
-                Clients = _clientService.GetClientsOnPage(_context, pageNumber, itemsOnPage).Result.ToList();
-                return Page();
+                return RedirectToPage("Error");
             }
 
-            return RedirectToPage("Error");
+            Clients = await _clientService.GetPage(pageNumber, itemsOnPage);
+            return Page();
         }
     }
 }

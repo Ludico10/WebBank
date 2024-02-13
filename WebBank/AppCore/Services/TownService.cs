@@ -3,13 +3,9 @@ using WebBank.AppCore.Entities;
 using WebBank.AppCore.Interfaces;
 using WebBank.Infrastructure.Data;
 
-namespace WebBank.AppCore.Services
+namespace WebBank.AppCore.Services;
+
+public class TownService(MySQLContext context) : ITownService
 {
-    public class TownService : ITownService
-    {
-        public async Task<IEnumerable<Town>> GetAllTowns(MySQLContext context)
-        {
-            return await context.Towns.ToListAsync();
-        }
-    }
+    public async Task<List<Town>> GetAll() => await context.Towns.ToListAsync();
 }

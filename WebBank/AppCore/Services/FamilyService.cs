@@ -3,13 +3,12 @@ using WebBank.AppCore.Entities;
 using WebBank.AppCore.Interfaces;
 using WebBank.Infrastructure.Data;
 
-namespace WebBank.AppCore.Services
+namespace WebBank.AppCore.Services;
+
+public class FamilyService(MySQLContext context) : IFamilyService
 {
-    public class FamilyService : IFamilyService
+    public async Task<List<FamilyStatus>> GetAll()
     {
-        public async Task<IEnumerable<FamilyStatus>> GetAllStatuses(MySQLContext context)
-        {
-            return await context.FamilyStatuses.ToListAsync();
-        }
+        return await context.FamilyStatuses.ToListAsync();
     }
 }

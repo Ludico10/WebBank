@@ -1,15 +1,13 @@
 ﻿using WebBank.AppCore.Entities;
-using WebBank.Infrastructure.Data;
 
-namespace WebBank.AppCore.Interfaces
+namespace WebBank.AppCore.Interfaces;
+
+public interface IClientService
 {
-    public interface IClientService
-    {
-        public Task<IEnumerable<Client>> GetClientsOnPage(MySQLContext context, int pageNumber, int itemsOnPage);
-        public Task<int> GetClientsCount(MySQLContext context);
-        public void DeleteClient(MySQLContext context, int id);
-        public void AddClient(MySQLContext context, Client client);
-        public void ChangeClient(MySQLContext context, Client client);
-        public Task<Client?> GetClientById(MySQLContext context, int id);
-    }
+    public Task<List<Client>> GetPage(int pageNumber, int itemsOnPage);
+    public Task<int> CountClients();
+    public Task Delete(int id);
+    public Task Add(Client client);
+    public Task Edit(Client client);
+    public Task<Client?> Find(int id);
 }

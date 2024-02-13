@@ -3,13 +3,9 @@ using WebBank.AppCore.Entities;
 using WebBank.AppCore.Interfaces;
 using WebBank.Infrastructure.Data;
 
-namespace WebBank.AppCore.Services
+namespace WebBank.AppCore.Services;
+
+public class DisabilityService(MySQLContext context) : IDisabilityService
 {
-    public class DisabilityService : IDisabilityService
-    {
-        public async Task<IEnumerable<DisabilityGroup>> GetAllGroups(MySQLContext context)
-        {
-            return await context.DisabilityGroups.ToListAsync();
-        }
-    }
+    public async Task<List<DisabilityGroup>> GetAll() => await context.DisabilityGroups.ToListAsync();
 }

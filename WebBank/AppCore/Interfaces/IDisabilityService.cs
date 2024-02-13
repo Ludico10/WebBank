@@ -1,10 +1,8 @@
 ﻿using WebBank.AppCore.Entities;
-using WebBank.Infrastructure.Data;
 
-namespace WebBank.AppCore.Interfaces
+namespace WebBank.AppCore.Interfaces;
+
+public interface IDisabilityService
 {
-    public interface IDisabilityService
-    {
-        public Task<IEnumerable<DisabilityGroup>> GetAllGroups(MySQLContext context);
-    }
+    public Task<List<DisabilityGroup>> GetAll();
 }
