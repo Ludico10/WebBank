@@ -8,10 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<MySQLContext>();
 builder.Services.AddScoped<IClientService, ClientService>();
-builder.Services.AddScoped<ITownService, TownService>();
-builder.Services.AddScoped<ICitizenshipService, CitizenshipService>();
-builder.Services.AddScoped<IFamilyService, FamilyService>();
-builder.Services.AddScoped<IDisabilityService, DisabilityService>();
 
 var app = builder.Build();
 

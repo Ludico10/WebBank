@@ -9,7 +9,6 @@ namespace WebBank.Pages
 {
     public class EditModel : PageModel
     {
-        private readonly MySQLContext _context;
         private readonly IClientService _clientService;
 
         [BindProperty]
@@ -24,15 +23,14 @@ namespace WebBank.Pages
         public string BirthPlace { get; set; } = "";
 
 
-        public EditModel(MySQLContext context, IClientService clientService, ITownService townService, IFamilyService familyService, IDisabilityService disabilityService, ICitizenshipService citizenshipService)
+        public EditModel(MySQLContext context, IClientService clientService)
         {
-            _context = context;
             _clientService = clientService;
 
-            Towns = new SelectList(townService.GetAll().Result, "Id", "Name");
-            FamilyStatuses = new SelectList(familyService.GetAll().Result, "Id", "Name");
-            DisabilityGroups = new SelectList(disabilityService.GetAll().Result, "Id", "Name");
-            Citizenships = citizenshipService.GetAll().Result.ToList();
+            Towns = new SelectList(context.Towns.ToList(), "Id", "Name");
+            FamilyStatuses = new SelectList(context.FamilyStatuses.ToList(), "Id", "Name");
+            DisabilityGroups = new SelectList(context.DisabilityGroups.ToList(), "Id", "Name");
+            Citizenships = [.. context.Citizenships];
         }
 
         public IActionResult OnGet(int? id)
