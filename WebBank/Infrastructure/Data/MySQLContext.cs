@@ -5,7 +5,7 @@ namespace WebBank.Infrastructure.Data;
 
 public class MySQLContext : DbContext
 {
-    public readonly string dbPath = "server=localhost;database=bank_db;user=root;password=admin";
+    public readonly string dbPath = "server=localhost;database=bank_db;user=root;password=";
 
     public MySQLContext()
     {
@@ -26,6 +26,9 @@ public class MySQLContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Client>().HasAlternateKey(c => c.IdentificationNumber);
+        modelBuilder.Entity<Client>().HasAlternateKey(c => new { c.PassportSeries, c.PassportNumber });
+
         modelBuilder.Entity<Town>().HasData(
         [
             new() { Id = 1, Name = "Минск" },
