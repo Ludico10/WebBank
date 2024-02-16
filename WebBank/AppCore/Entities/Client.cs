@@ -19,7 +19,7 @@ public class Client
     public required string Patronymic { get; set; }
 
     //не больше сегодняшней даты - 18 лет
-    public required DateTime Birthday { get; set; }
+    public required DateOnly Birthday { get; set; }
 
     public required Gender Gender { get; set; }
 
@@ -37,7 +37,7 @@ public class Client
     public required string IssuePlace { get; set; }
 
     //не больше сегодняшней даты
-    public required DateTime IssueDate { get; set; }
+    public required DateOnly IssueDate { get; set; }
 
     //альтернативный ключ
     [StringLength(14)]
