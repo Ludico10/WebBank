@@ -29,7 +29,12 @@ public class MySQLContext : DbContext
         configurationBuilder
             .Properties<DateOnly>()
             .HaveConversion<Converters.DateOnlyConverter>()
-            .HaveColumnType("date");
+            .HaveColumnType("DATE");
+
+        configurationBuilder
+            .Properties<Gender>()
+            .HaveConversion<Converters.GenderConverter>()
+            .HaveColumnType($"ENUM('{nameof(Gender.Male)}', '{nameof(Gender.Female)}')");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
