@@ -89,7 +89,7 @@ public class MySQLContext : DbContext
             .Entity<Client>()
             .HasData(
                 [
-                    new
+                    new()
                     {
                         Id = 1,
                         Name = "Иван",
@@ -113,7 +113,7 @@ public class MySQLContext : DbContext
                         IsConscript = false,
                         IsActive = true
                     },
-                    new
+                    new()
                     {
                         Id = 2,
                         Name = "Фёдор",
@@ -137,7 +137,7 @@ public class MySQLContext : DbContext
                         IsConscript = true,
                         IsActive = true
                     },
-                    new
+                    new()
                     {
                         Id = 3,
                         Name = "Сергей",
@@ -161,7 +161,7 @@ public class MySQLContext : DbContext
                         IsConscript = true,
                         IsActive = true
                     },
-                    new
+                    new()
                     {
                         Id = 4,
                         Name = "Казимирка",
@@ -185,7 +185,7 @@ public class MySQLContext : DbContext
                         IsConscript = false,
                         IsActive = true
                     },
-                    new
+                    new()
                     {
                         Id = 5,
                         Name = "Владислава",
@@ -209,7 +209,7 @@ public class MySQLContext : DbContext
                         IsConscript = false,
                         IsActive = true
                     },
-                    new
+                    new()
                     {
                         Id = 6,
                         Name = "Дарья",
@@ -233,7 +233,7 @@ public class MySQLContext : DbContext
                         IsConscript = false,
                         IsActive = true
                     },
-                    new
+                    new()
                     {
                         Id = 7,
                         Name = "Дамир",
@@ -257,7 +257,7 @@ public class MySQLContext : DbContext
                         IsConscript = false,
                         IsActive = true
                     },
-                    new
+                    new()
                     {
                         Id = 8,
                         Name = "Дмитрий",
@@ -281,7 +281,7 @@ public class MySQLContext : DbContext
                         IsConscript = false,
                         IsActive = true
                     },
-                    new
+                    new()
                     {
                         Id = 9,
                         Name = "Фёдор",
