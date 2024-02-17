@@ -69,3 +69,7 @@ th {
 .pagination-container {
     font-size: 24px
 }
+
+.unresizable{
+    resize: none;
+}
