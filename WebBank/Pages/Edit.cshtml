@@ -5,7 +5,7 @@
     <h1 class="text-center">Редактирование пользователя</h1>
     <hr />
     <form method="post">
-        <input name="id" value="@Model.Client?.Id" type="hidden" />
+        <input asp-for="Client!.Id" type="hidden" />
         <div>
             <h2 class="text-center text-uppercase">Фио</h2>
             <div>

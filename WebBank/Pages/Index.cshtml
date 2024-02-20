@@ -43,7 +43,7 @@
                         <td>@client.Birthday.ToString("dd.MM.yyyy")</td>
                         <td>@(client.Gender == AppCore.Entities.Gender.Female ? "Женщина" : "Мужчина")</td>
                         <td>@client.FamilyStatus.Name</td>
-                        <td>@string.Join(", ", client.Citizenships.Select(c => c.Name))</td>
+                        <td>@string.Join(", ", client.Citizenships.Select(cc => cc.Citizenship.Name))</td>
                         <td>@client.DisabilityGroup.Name</td>
                         <td>@(client.IsPensioner ? "Да" : "Нет")</td>
                         <td>@(client.IsConscript ? "Да" : "Нет")</td>

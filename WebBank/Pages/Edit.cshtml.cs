@@ -41,7 +41,7 @@ namespace WebBank.Pages
                 Client = await _clientService.Find(id.Value);
                 if (Client == null)
                     return RedirectToPage("Error");
-                CitizenshipIds = Client.Citizenships.Select(c => c.Id).ToList();
+                CitizenshipIds = Client.Citizenships.Select(cc => cc.Citizenship.Id).ToList();
             }
             return Page();
         }
@@ -51,7 +51,10 @@ namespace WebBank.Pages
             if (Client != null && CitizenshipIds != null)
             {
                 Client.Citizenships.Clear();
-                Client.Citizenships.AddRange(CitizenshipIds!.Select(id => _context.Citizenships.First(x => x.Id == id)));
+                foreach (var cid in CitizenshipIds)
+                {
+                    Client.Citizenships.Add(new ClientCitizenship { CitizenshipId = cid });
+                }
                 if (id != null)
                 {
                     await _clientService.Edit(Client);

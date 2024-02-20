@@ -43,7 +43,10 @@ public class ClientService(MySQLContext context) : IClientService
     public async Task Edit(Client client)
     {
         client.IsActive = true;
-        context.Update(client);
+        var entitiesToRemove = context.ClientCitizenships.Where(cc => cc.ClientId == client.Id);
+        context.ClientCitizenships.RemoveRange(entitiesToRemove);
+        context.Attach(client);
+        context.Entry(client).State = EntityState.Modified;
         await context.SaveChangesAsync();
     }
 
