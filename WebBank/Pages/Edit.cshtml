@@ -1,124 +1,164 @@
 ﻿@page "{id:int?}"
 @using WebBank.AppCore.Entities
 @model WebBank.Pages.EditModel
- 
-<h2>Редактирование пользователя</h2>
-  
-<form method="post">
-    <input name="id" value="@Model.Client?.Id" type="hidden" />
-    <p>
-        <label>Имя</label><label>*</label><br />
-        <input name="name" value="@Model.Client?.Name"/>
-    </p>
-    <p>
-        <label>Фамилия</label><label>*</label><br />
-        <input name="surname" value="@Model.Client?.Surname" />
-    </p>
-    <p>
-        <label>Отчество</label><label>*</label><br />
-        <input name="patronymic" value="@Model.Client?.Patronymic" />
-    </p>
-    <p>
-        <label>Дата рождения</label><label>*</label><br />
-        <input type="date" name="birthday" value="@string.Format("{0:yyyy-MM-dd}", Model.Client?.Birthday)" />
-    </p>
-    <p>
-        <label>Пол</label><label>*</label><br />
-        @Html.RadioButton("gender", Gender.Male, Model.Client?.Gender == Gender.Male)
-        <label>Мужской</label><br />
-        @Html.RadioButton("gender", Gender.Female, Model.Client?.Gender == Gender.Female)
-        <label>Женский</label>
-    </p>
-    <p>
-        <label>Серия и номер паспорта</label><label>*</label><br />
-        <input name="passportSeries" value="@Model.Client?.PassportSeries" />
-        <input name="passportNumber" value="@Model.Client?.PassportNumber" type="number" />
-    </p>
-    <p>
-        <label>Место выдачи паспорта</label><label>*</label><br />
-        <textarea name="issuePlace">@Model.Client?.IssuePlace</textarea>
-    </p>
-    <p>
-        <label>Дата выдачи пасспорта</label><label>*</label><br />
-        <input type="date" name="issueDate" value="@string.Format("{0:yyyy-MM-dd}", Model.Client?.IssueDate)" />
-    </p>
-    <p>
-        <label>Идентификационный номер</label><label>*</label><br />
-        <input name="identificationNumber" value="@Model.Client?.IdentificationNumber" />
-    </p>
-    <p>
-        <label>Место рождения</label><label>*</label><br />
-        <textarea name="issuePlace" asp-for="@Model.BirthPlace">@Model.BirthPlace</textarea>
-    </p>
-    <p>
-        <label>Город проживания</label><label>*</label><br />
-        <select asp-items="Model.Towns"></select>
-    </p>
-    <p>
-        <label>Адрес проживания</label><label>*</label><br />
-        <textarea name="address">@Model.Client?.Address</textarea>
-    </p>
-    <p>
-        <label>Мобильный телефон</label><br />
-        <input name="mobilePhone" value="@Model.Client?.MobilePhone" />
-    </p>
-    <p>
-        <label>Домашний телефон</label><br />
-        <input name="homePhone" value="@Model.Client?.HomePhone" />
-    </p>
-    <p>
-        <label>Адрес электронной почты</label><br />
-        <input name="email" value="@Model.Client?.Email" />
-    </p>
-    <p>
-        <label>Место работы</label><br />
-        <textarea name="workPlace"> @Model.Client?.WorkPlace </textarea>
-    </p>
-    <p>
-        <label>Занимаемая должность</label><br />
-        <input name="workPosition" value="@Model.Client?.WorkPosition" />
-    </p>
-    <p>
-        <label>Город регистрации</label><label>*</label><br />
-        <select asp-items="Model.Towns"></select>
-    </p>
-    <p>
-        <label>Адрес регистрации</label><label>*</label><br />
-        <textarea name="registrationAddress"> @Model.Client?.RegistrationAddress </textarea>
-    </p>
-    <p>
-        <label>Семейное положение</label><label>*</label><br />
-        <select asp-items="Model.FamilyStatuses"></select>
-    </p>
-    <p>
-        <label>Группа здоровья</label><label>*</label><br />
-        <select asp-items="Model.DisabilityGroups"></select>
-    </p>
-    <p>
-        <label>
-            <input name="pensioner" value="@Model.Client?.IsPensioner" type="checkbox" />
-            Пенсионер
-        </label>
-    </p>
-    <p>
-        <label>
-            <input name="conscript" value="@Model.Client?.IsConscript" type="checkbox" />
-            Военнообязанный
-        </label>
-    </p>
-    <p>
-        <label>Ежемесячная заработная плата</label><br />
-        <input name="registrationAddress" value="@Model.Client?.MonthlyIncome" type="number" />
-    </p>
-    <p>
-        <label>Гражданство</label><label>*</label><br />
-        @foreach (var citizenship in Model.Citizenships)
-        {
-            <label>
-                @Html.CheckBox("citizenship", isChecked: !Model.Client?.Citizenships.TrueForAll(c => c.Id != citizenship.Id), citizenship)
-                @citizenship.Name
-            </label><br />
-        }
-    </p>
-    <input type="submit" value="Сохранить" />
-</form>
+<div class="container">
+    <h1 class="text-center">Редактирование пользователя</h1>
+    <hr />
+    <form method="post">
+        <input name="id" value="@Model.Client?.Id" type="hidden" />
+        <div>
+            <h2 class="text-center text-uppercase">Фио</h2>
+            <div>
+                <label asp-for="Client!.Surname">Фамилия<span class="required-asterisk">*</span></label>
+                <input asp-for="Client!.Surname" />
+            </div>
+            <br />
+            <div>
+                <label asp-for="Client!.Name">Имя<span class="required-asterisk">*</span></label>
+                <input asp-for="Client!.Name" />
+            </div>
+            <br />
+            <div>
+                <label asp-for="Client!.Patronymic">Отчество<span class="required-asterisk">*</span></label>
+                <input asp-for="Client!.Patronymic" />
+            </div>
+        </div>
+        <hr />
+        <div>
+            <h2 class="text-center text-uppercase">Общая информация</h2>
+            <div>
+                <label asp-for="Client!.Birthday">День рождения<span class="required-asterisk">*</span></label>
+                <input type="date" asp-for="Client!.Birthday" />
+            </div>
+            <br />
+            <div>
+                Пол<span class="required-asterisk">*</span>:
+                @foreach (var gender in Enum.GetValues(typeof(Gender)).OfType<Gender>())
+                {
+                    <label>
+                        <input type="radio" asp-for="Client!.Gender" value="@((int)gender)" checked=@(gender == Model.Client!.Gender) />
+                        @(gender == AppCore.Entities.Gender.Female ? "Женщина" : "Мужчина")
+                    </label>
+                }
+            </div>
+            <br />
+            <div>
+                <label asp-for="Client!.FamilyStatusId">Семейное положение<span class="required-asterisk">*</span></label>
+                <select asp-items="Model.FamilyStatusOptions" asp-for="Client!.FamilyStatusId"></select>
+            </div>
+            <br />
+            <div>
+                <label asp-for="CitizenshipIds">Гражданство<span class="required-asterisk">*</span>:</label>
+                <select multiple asp-items="Model.CitizenshipOptions" asp-for="CitizenshipIds"></select>
+            </div>
+            <br />
+            <div>
+                <label asp-for="Client!.DisabilityGroupId">Инвалидность<span class="required-asterisk">*</span></label>
+                <select asp-items="Model.DisabilityGroupOptions" asp-for="Client!.DisabilityGroupId"></select>
+            </div>
+            <br />
+            <div>
+                <label>
+                    <input type="checkbox" asp-for="Client!.IsPensioner" />
+                    Пенсионер
+                </label>
+            </div>
+            <div>
+                <label>
+                    <input type="checkbox" asp-for="Client!.IsConscript" />
+                    Военнообязанный
+                </label>
+            </div>
+        </div>
+        <hr />
+        <div>
+            <h2 class="text-center text-uppercase">Пасспортные данные</h2>
+            <div>
+                <label asp-for="Client!.PassportSeries">Серия<span class="required-asterisk">*</span></label>
+                <input asp-for="Client!.PassportSeries" />
+                <label asp-for="Client!.PassportNumber">Номер<span class="required-asterisk">*</span></label>
+                <input asp-for="Client!.PassportNumber" type="number" />
+            </div>
+            <br />
+            <div>
+                <label asp-for="Client!.IdentificationNumber">Идентификационный номер<span class="required-asterisk">*</span></label>
+                <input asp-for="Client!.IdentificationNumber" />
+            </div>
+            <br />
+            <div>
+                <label asp-for="Client!.IssuePlace">Место выдачи</label><label>*</label>
+                <textarea asp-for="Client!.IssuePlace" cols="80" rows="2" class="unresizable"></textarea>
+            </div>
+            <br />
+            <div>
+                <label asp-for="Client!.IssueDate">Дата выдачи<span class="required-asterisk">*</span></label>
+                <input type="date" asp-for="Client!.IssueDate" />
+            </div>
+        </div>
+        <hr />
+        <div>
+            <h2 class="text-center text-uppercase">Контактная информация</h2>
+            <div>
+                <label asp-for="Client!.BirthPlace">Место рождения<span class="required-asterisk">*</span></label>
+                <textarea asp-for="Client!.BirthPlace" cols="80" rows="2" class="unresizable"></textarea>
+            </div>
+            <br />
+            <div>
+                <label asp-for="Client!.RegistrationTownId">Город прописки<span class="required-asterisk">*</span></label>
+                <select asp-for="Client!.RegistrationTownId" asp-items="Model.TownOptions"></select>
+            </div>
+            <br />
+            <div>
+                <label asp-for="Client!.RegistrationAddress">Адрес прописки<span class="required-asterisk">*</span></label>
+                <textarea asp-for="Client!.RegistrationAddress" cols="80" rows="2" class="unresizable"></textarea>
+            </div>
+            <br />
+            <div>
+                <label asp-for="Client!.TownId">Город проживания<span class="required-asterisk">*</span></label>
+                <select asp-for="Client!.TownId" asp-items="Model.TownOptions" cols="80" rows="2" class="unresizable"></select>
+            </div>
+            <br />
+            <div>
+                <label asp-for="Client!.Address">Адрес проживания<span class="required-asterisk">*</span></label>
+                <textarea asp-for="Client!.Address" cols="80" rows="2" class="unresizable"></textarea>
+            </div>
+            <br />
+            <div>
+                <label asp-for="Client!.MobilePhone">Мобильный телефон</label>
+                <input asp-for="Client!.MobilePhone" />
+            </div>
+            <br />
+            <div>
+                <label asp-for="Client!.HomePhone">Домашний телефон</label>
+                <input asp-for="Client!.HomePhone" />
+            </div>
+            <br />
+            <div>
+                <label asp-for="Client!.Email">Адрес электронной почты</label>
+                <input asp-for="Client!.Email" />
+            </div>
+        </div>
+        <hr />
+        <div>
+            <h2 class="text-center text-uppercase">Работа</h2>
+            <div>
+                <label asp-for="Client!.WorkPlace">Место работы</label>
+                <textarea asp-for="Client!.WorkPlace" cols="80" rows="2" class="unresizable"></textarea>
+            </div>
+            <br />
+            <div>
+                <label asp-for="Client!.WorkPosition">Должность</label>
+                <input asp-for="Client!.WorkPosition" />
+            </div>
+            <br />
+            <div>
+                <label asp-for="Client!.MonthlyIncome">Доход, <span class="text-nowrap">BYN/месяц</span></label>
+                <input asp-for="Client!.MonthlyIncome" type="number" />
+            </div>
+        </div>
+        <hr />
+        <div class="text-center">
+            <input type="submit" value="Сохранить" />
+        </div>
+    </form>
+</div>

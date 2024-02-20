@@ -6,68 +6,84 @@
 <div class="text-center">
     <h2>Список пользователей</h2>
     <table border="1">
-        <tr>
-            <th>ФИО</th>
-            <th>День рождения</th>
-            <th>Пол</th>
-            <th>Номер паспорта</th>
-            <th>Идентификационный номер</th>
-            <th>Место выдачи</th>
-            <th>Дата выдачи</th>
-            <th>Место рождения</th>
-            <th>Адрес проживания</th>
-            <th>Телефон (дом)</th>
-            <th>Телефон (моб)</th>
-            <th class="text-nowrap">e-mail</th>
-            <th>Место работы</th>
-            <th>Должность</th>
-            <th>Доход, <span class="text-nowrap">BYN/месяц</span></th>
-            <th>Адрес прописки</th>
-            <th>Семейное положение</th>
-            <th>Гражданство</th>
-            <th>Инвалидность</th>
-            <th>Пенсионер</th>
-            <th>Военнообязанный</th>
-        </tr>
-        @foreach (var client in Model.Clients)
-        {
+        <thead>
             <tr>
-                <td>@($"{client.Surname} {client.Name} {client.Patronymic}")</td>
-                <td>@client.Birthday.ToString("dd.MM.yyyy")</td>
-                <td>@Enum.GetName(client.Gender.GetType(), client.Gender)</td>
-                <td>@(client.PassportSeries + client.PassportNumber)</td>
-                <td>@client.IdentificationNumber</td>
-                <td>@client.IssuePlace</td>
-                <td>@client.IssueDate.ToString("dd.MM.yyyy")</td>
-                <td>@client.BirthPlace</td>
-                <td>@($"г.{client.Town.Name} {client.Address}")</td>
-                <td>@(client.HomePhone ?? "-")</td>
-                <td>@(client.MobilePhone ?? "-")</td>
-                <td>@(client.Email ?? "-")</td>
-                <td>@(client.WorkPlace ?? "-")</td>
-                <td>@(client.WorkPosition ?? "-")</td>
-                <td>@(client.MonthlyIncome == null ? "-" : client.MonthlyIncome / 100.0)</td>
-                <td>@($"г.{client.RegistrationTown.Name} {client.RegistrationAddress}")</td>
-                <td>@client.FamilyStatus.Name</td>
-                <td>@string.Join(", ", client.Citizenships.Select(c => c.Name))</td>
-                <td>@client.DisabilityGroup.Name</td>
-                <td>@(client.IsPensioner ? "Да" : "Нет")</td>
-                <td>@(client.IsConscript ? "Да" : "Нет")</td>
-                <td>
-                    <div class="parent">
-                        <form method="post">
-                            <a class="child" asp-page="Edit" asp-route-id="@client.Id">
-                                <img src="~/images/edit.png" alt="Изменить" class="icon" />
-                            </a>
-                            <button class="child no-border" type="submit" asp-page-handler="delete" asp-route-id="@client.Id">
-                                <img src="~/images/recycle-bin.png" alt="Удалить" class="icon" />
-                            </button>
-                        </form>
-                    </div>
-
-                </td>
+                <th>ID</th>
+                <th>ФИО</th>
+                <th>День рождения</th>
+                <th>Пол</th>
+                <th>Семейное положение</th>
+                <th>Гражданство</th>
+                <th>Инвалидность</th>
+                <th>Пенсионер</th>
+                <th>Военнообязанный</th>
+                <th>Номер паспорта</th>
+                <th>Идентификационный номер</th>
+                <th>Место выдачи</th>
+                <th>Дата выдачи</th>
+                <th>Место рождения</th>
+                <th>Адрес прописки</th>
+                <th>Адрес проживания</th>
+                <th>Телефон (дом)</th>
+                <th>Телефон (моб)</th>
+                <th class="text-nowrap">e-mail</th>
+                <th>Место работы</th>
+                <th>Должность</th>
+                <th>Доход, <span class="text-nowrap">BYN/месяц</span></th>
             </tr>
-        }
+        </thead>
+        <tbody>
+            @if (Model.Clients.Any())
+            {
+                @foreach (var client in Model.Clients)
+                {
+                    <tr>
+                        <td>@client.Id</td>
+                        <td>@($"{client.Surname} {client.Name} {client.Patronymic}")</td>
+                        <td>@client.Birthday.ToString("dd.MM.yyyy")</td>
+                        <td>@(client.Gender == AppCore.Entities.Gender.Female ? "Женщина" : "Мужчина")</td>
+                        <td>@client.FamilyStatus.Name</td>
+                        <td>@string.Join(", ", client.Citizenships.Select(c => c.Name))</td>
+                        <td>@client.DisabilityGroup.Name</td>
+                        <td>@(client.IsPensioner ? "Да" : "Нет")</td>
+                        <td>@(client.IsConscript ? "Да" : "Нет")</td>
+                        <td>@(client.PassportSeries + client.PassportNumber)</td>
+                        <td>@client.IdentificationNumber</td>
+                        <td>@client.IssuePlace</td>
+                        <td>@client.IssueDate.ToString("dd.MM.yyyy")</td>
+                        <td>@client.BirthPlace</td>
+                        <td>@($"г.{client.RegistrationTown.Name} {client.RegistrationAddress}")</td>
+                        <td>@($"г.{client.Town.Name} {client.Address}")</td>
+                        <td>@(client.HomePhone ?? "-")</td>
+                        <td>@(client.MobilePhone ?? "-")</td>
+                        <td>@(client.Email ?? "-")</td>
+                        <td>@(client.WorkPlace ?? "-")</td>
+                        <td>@(client.WorkPosition ?? "-")</td>
+                        <td>@(client.MonthlyIncome == null ? "-" : client.MonthlyIncome / 100.0)</td>
+                        <td>
+                            <div class="parent">
+                                <form method="post">
+                                    <a class="child" asp-page="Edit" asp-route-id="@client.Id">
+                                        <img src="~/images/edit.png" alt="Изменить" class="icon" />
+                                    </a>
+                                    <button class="child no-border" type="submit" asp-page-handler="delete" asp-route-id="@client.Id">
+                                        <img src="~/images/recycle-bin.png" alt="Удалить" class="icon" />
+                                    </button>
+                                </form>
+                            </div>
+
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="21"><h3>Нет клиентов</h3></td>
+                </tr>
+            }
+        </tbody>
+
     </table>
     <hr />
     <div class="pagination-container">

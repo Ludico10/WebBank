@@ -1,56 +1,62 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebBank.AppCore.Entities;
 
 public class Client
 {
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public int Id { get; set; }
 
     [MaxLength(50)]
     [RegularExpression(@"^[А-Я][а-я]*$")]
-    public required string Name { get; set; }
+    public string Name { get; set; }
 
     [MaxLength(50)]
     [RegularExpression(@"^[А-Я][а-я]*$")]
-    public required string Surname { get; set; }
+    public string Surname { get; set; }
 
     [MaxLength(50)]
     [RegularExpression(@"^[А-Я][а-я]*$")]
-    public required string Patronymic { get; set; }
+    public string Patronymic { get; set; }
 
     //не больше сегодняшней даты - 18 лет
-    public required DateTime Birthday { get; set; }
+    public DateOnly Birthday { get; set; }
 
-    public required Gender Gender { get; set; }
+    public Gender Gender { get; set; }
 
     //серия + номер = альтернативный ключ
     [StringLength(2)]
     [RegularExpression(@"^[A-ZА-Я]{2}$")]
-    public required string PassportSeries { get; set; }
+    public string PassportSeries { get; set; }
 
     //серия + номер = альтернативный ключ
     [StringLength(7)]
     [RegularExpression(@"^\d{7}$")]
-    public required string PassportNumber { get; set; }
+    public string PassportNumber { get; set; }
 
     [MaxLength(300)]
-    public required string IssuePlace { get; set; }
+    public string IssuePlace { get; set; }
 
     //не больше сегодняшней даты
-    public required DateTime IssueDate { get; set; }
+    public DateOnly IssueDate { get; set; }
 
     //альтернативный ключ
     [StringLength(14)]
     [RegularExpression(@"^\w{14}")]
-    public required string IdentificationNumber { get; set; }
+    public string IdentificationNumber { get; set; }
 
     [MaxLength(300)]
-    public required string BirthPlace { get; set; }
+    public string BirthPlace { get; set; }
 
-    public required virtual Town Town { get; set; }
+    [ForeignKey(nameof(Town))]
+    public int TownId { get; set; }
+
+    public virtual Town Town { get; set; }
 
     [MaxLength(300)]
-    public required string Address { get; set; }
+    public string Address { get; set; }
 
     [StringLength(7)]
     [RegularExpression(@"^\d{7}$")]
@@ -70,22 +76,33 @@ public class Client
     [MaxLength(100)]
     public string? WorkPosition { get; set; }
 
-    public required virtual Town RegistrationTown { get; set; }
+    [ForeignKey(nameof(RegistrationTown))]
+    public int RegistrationTownId { get; set; }
+
+    public virtual Town RegistrationTown { get; set; }
 
     [MaxLength(300)]
-    public required string RegistrationAddress { get; set; }
+    public string RegistrationAddress { get; set; }
 
-    public required virtual FamilyStatus FamilyStatus { get; set; }
+    [ForeignKey(nameof(FamilyStatus))]
+    public int FamilyStatusId { get; set; }
 
-    public required virtual DisabilityGroup DisabilityGroup { get; set; }
+    public virtual FamilyStatus FamilyStatus { get; set; }
 
-    public required bool IsPensioner { get; set; }
+    [ForeignKey(nameof(DisabilityGroup))]
+    public int DisabilityGroupId { get; set; }
 
-    public required bool IsConscript { get; set; }
+    public virtual DisabilityGroup DisabilityGroup { get; set; }
+
+    public bool IsPensioner { get; set; }
+
+    public bool IsConscript { get; set; }
 
     public int? MonthlyIncome { get; set; }
 
-    public required bool IsActive { get; set; }
+    public bool IsActive { get; set; }
 
     public virtual List<Citizenship> Citizenships { get; set; } = [];
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

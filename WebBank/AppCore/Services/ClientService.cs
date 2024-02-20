@@ -3,52 +3,54 @@ using WebBank.AppCore.Entities;
 using WebBank.AppCore.Interfaces;
 using WebBank.Infrastructure.Data;
 
-namespace WebBank.AppCore.Services
+namespace WebBank.AppCore.Services;
+
+public class ClientService(MySQLContext context) : IClientService
 {
-    public class ClientService : IClientService
+    public async Task<int> CountClients()
     {
-        public async Task<int> GetClientsCount(MySQLContext context)
-        {
-            return await context.Clients.Where(c => c.IsActive == true).CountAsync();
-        }
+        return await context.Clients.Where(c => c.IsActive == true).CountAsync();
+    }
 
-        public void ChangeClient(MySQLContext context, Client client)
-        {
-            client.IsActive = true;
-            context.Update(client);
-            context.SaveChanges();
-        }
+    public async Task<List<Client>> GetPage(int pageNumber, int itemsOnPage)
+    {
+        var page = await context.Clients
+            .OrderBy(c => c.Surname)
+            .Where(c => c.IsActive)
+            .Skip(itemsOnPage * (pageNumber - 1))
+            .Take(itemsOnPage)
+            .ToListAsync();
 
-        public void AddClient(MySQLContext context, Client client)
-        {
-            client.IsActive = true;
-            context.Clients.Add(client);
-            context.SaveChanges();
-        }
+        return page;
+    }
 
-        public async Task<Client?> GetClientById(MySQLContext context, int id)
-        {
-            return await context.Clients.Where(c => c.Id == id)
-                                        .FirstOrDefaultAsync();
-        }
+    public async Task Delete(int id)
+    {
+        var client = await context.Clients.SingleOrDefaultAsync(c => c.Id == id);
+        if (client == null) return;
 
+        client.IsActive = false;
+        await context.SaveChangesAsync();
+    }
 
-        public async Task<IEnumerable<Client>> GetClientsOnPage(MySQLContext context, int pageNumber, int itemsOnPage)
-        {
-            return await context.Clients.OrderBy(c => c.Surname)
-                                        .Where(c => c.IsActive)
-                                        .Skip(itemsOnPage * (pageNumber - 1))
-                                        .Take(itemsOnPage).ToListAsync();
-        }
+    public async Task Add(Client client)
+    {
+        client.IsActive = true;
+        context.Clients.Add(client);
+        await context.SaveChangesAsync();
+    }
 
-        public void DeleteClient(MySQLContext context, int id)
-        {
-            var client = context.Clients.SingleOrDefault(c => c.Id == id);
-            if (client != null)
-            {
-                client.IsActive = false;
-                context.SaveChanges();
-            }
-        }
+    public async Task Edit(Client client)
+    {
+        client.IsActive = true;
+        context.Update(client);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task<Client?> Find(int id)
+    {
+        return await context.Clients
+            .Where(c => c.Id == id)
+            .FirstOrDefaultAsync();
     }
 }

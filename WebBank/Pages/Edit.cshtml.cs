@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using WebBank.AppCore.Entities;
 using WebBank.AppCore.Interfaces;
 using WebBank.Infrastructure.Data;
@@ -9,59 +10,55 @@ namespace WebBank.Pages
 {
     public class EditModel : PageModel
     {
-        private readonly MySQLContext _context;
         private readonly IClientService _clientService;
+        private MySQLContext _context;
+
+        public EditModel(MySQLContext context, IClientService clientService)
+        {
+            _clientService = clientService;
+            _context = context;
+
+            TownOptions = new SelectList(_context.Towns.AsNoTracking().ToList(), "Id", "Name");
+            FamilyStatusOptions = new SelectList(_context.FamilyStatuses.AsNoTracking().ToList(), "Id", "Name");
+            DisabilityGroupOptions = new SelectList(_context.DisabilityGroups.AsNoTracking().ToList(), "Id", "Name");
+            CitizenshipOptions = new SelectList(_context.Citizenships.ToList(), "Id", "Name");
+        }
 
         [BindProperty]
         public Client? Client { get; set; }
-        public SelectList Towns { get; }
-        public SelectList FamilyStatuses { get; }
-        public SelectList DisabilityGroups { get; }
-        public List<Citizenship> Citizenships { get; }
+        public SelectList TownOptions { get; set; }
+        public SelectList FamilyStatusOptions { get; set; }
+        public SelectList DisabilityGroupOptions { get; set; }
+        public SelectList CitizenshipOptions { get; set; }
 
-        //костыли
         [BindProperty]
-        public string BirthPlace { get; set; } = "";
+        public List<int>? CitizenshipIds { get; set; }
 
-
-        public EditModel(MySQLContext context, IClientService clientService, ITownService townService, IFamilyService familyService, IDisabilityService disabilityService, ICitizenshipService citizenshipService)
-        {
-            _context = context;
-            _clientService = clientService;
-
-            Towns = new SelectList(townService.GetAllTowns(_context).Result, "Id", "Name");
-            FamilyStatuses = new SelectList(familyService.GetAllStatuses(_context).Result, "Id", "Name");
-            DisabilityGroups = new SelectList(disabilityService.GetAllGroups(_context).Result, "Id", "Name");
-            Citizenships = citizenshipService.GetAllCitizenships(_context).Result.ToList();
-        }
-
-        public IActionResult OnGet(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id != null)
             {
-                Client = _clientService.GetClientById(_context, id.Value).Result;
-                if (Client != null)
-                {
-                    BirthPlace = Client.BirthPlace;
-                }
-                else
+                Client = await _clientService.Find(id.Value);
+                if (Client == null)
                     return RedirectToPage("Error");
+                CitizenshipIds = Client.Citizenships.Select(c => c.Id).ToList();
             }
             return Page();
         }
 
-        public IActionResult OnPost(int? id)
+        public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (Client != null)
+            if (Client != null && CitizenshipIds != null)
             {
-                Client.BirthPlace = BirthPlace;
+                Client.Citizenships.Clear();
+                Client.Citizenships.AddRange(CitizenshipIds!.Select(id => _context.Citizenships.First(x => x.Id == id)));
                 if (id != null)
                 {
-                    _clientService.ChangeClient(_context, Client);
+                    await _clientService.Edit(Client);
                 }
                 else
                 {
-                    _clientService.AddClient(_context, Client);
+                    await _clientService.Add(Client);
                 }
 
                 return RedirectToPage("Index");
