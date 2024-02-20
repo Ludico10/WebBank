@@ -25,22 +25,25 @@ namespace WebBank.Pages
         }
 
         [BindProperty]
-        public Client? Client { get; set; }
+        public Client Client { get; set; } = new();
+
         public SelectList TownOptions { get; set; }
         public SelectList FamilyStatusOptions { get; set; }
         public SelectList DisabilityGroupOptions { get; set; }
         public SelectList CitizenshipOptions { get; set; }
 
         [BindProperty]
-        public List<int>? CitizenshipIds { get; set; }
+        public List<int> CitizenshipIds { get; set; } = [];
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id != null)
             {
-                Client = await _clientService.Find(id.Value);
-                if (Client == null)
+                var client = await _clientService.Find(id.Value);
+                if (client == null)
                     return RedirectToPage("Error");
+
+                Client = client;
                 CitizenshipIds = Client.Citizenships.Select(cc => cc.Citizenship.Id).ToList();
             }
             return Page();
