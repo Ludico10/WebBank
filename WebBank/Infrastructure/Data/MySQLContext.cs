@@ -5,7 +5,7 @@ namespace WebBank.Infrastructure.Data;
 
 public class MySQLContext : DbContext
 {
-    public readonly string dbPath = "server=localhost;database=bank_db;user=root;password=";
+    public readonly string dbPath = "server=localhost;database=bank_db;user=root;password=Phabletik1044";
 
     public MySQLContext()
     {
@@ -18,6 +18,11 @@ public class MySQLContext : DbContext
     public DbSet<Citizenship> Citizenships => Set<Citizenship>();
     public DbSet<DisabilityGroup> DisabilityGroups => Set<DisabilityGroup>();
     public DbSet<FamilyStatus> FamilyStatuses => Set<FamilyStatus>();
+    public DbSet<Currency> Currencies => Set<Currency>();
+    public DbSet<DepositProgram> DepositPrograms => Set<DepositProgram>();
+    public DbSet<BankAccount> BankAccounts => Set<BankAccount>();
+    public DbSet<ClientDeposit> ClientDeposits => Set<ClientDeposit>();
+    public DbSet<Transaction> Transactions => Set<Transaction>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder
@@ -118,11 +123,11 @@ public class MySQLContext : DbContext
                 Birthday = new DateTime(2003, 7, 25),
                 BirthPlace = "Республика Беларусь, Брест",
                 Gender = Gender.Male,
-                PassportSeries = "AС",
+                PassportSeries = "AD",
                 PassportNumber = "1234568",
                 IssuePlace = "Второоктябрьская 16",
                 IssueDate = new DateTime(2005, 3, 23),
-                IdentificationNumber = "2234567C123PB2",
+                IdentificationNumber = "2234567C123PB3",
                 TownId = 3,
                 Address = "Второапрельская 14",
                 RegistrationTownId = 3,
@@ -142,11 +147,11 @@ public class MySQLContext : DbContext
                 Birthday = new DateTime(2004, 7, 25),
                 BirthPlace = "Республика Беларусь, Брест",
                 Gender = Gender.Female,
-                PassportSeries = "AС",
+                PassportSeries = "AB",
                 PassportNumber = "1234569",
                 IssuePlace = "Второоктябрьская 16",
                 IssueDate = new DateTime(2005, 3, 24),
-                IdentificationNumber = "4234567C123PB3",
+                IdentificationNumber = "4234567C123PB4",
                 TownId = 3,
                 Address = "Второапрельская 14",
                 RegistrationTownId = 4,
@@ -166,11 +171,11 @@ public class MySQLContext : DbContext
                 Birthday = new DateTime(2004, 7, 25),
                 BirthPlace = "Республика Беларусь, Брест",
                 Gender = Gender.Female,
-                PassportSeries = "AС",
-                PassportNumber = "1234569",
+                PassportSeries = "AD",
+                PassportNumber = "1234563",
                 IssuePlace = "Второоктябрьская 16",
                 IssueDate = new DateTime(2005, 3, 24),
-                IdentificationNumber = "4234767C123PB3",
+                IdentificationNumber = "4234767C123PB5",
                 TownId = 4,
                 Address = "Второапрельская 14",
                 RegistrationTownId = 4,
@@ -191,10 +196,10 @@ public class MySQLContext : DbContext
                 BirthPlace = "Республика Беларусь, Брест",
                 Gender = Gender.Female,
                 PassportSeries = "AС",
-                PassportNumber = "1234569",
+                PassportNumber = "1234567",
                 IssuePlace = "Второоктябрьская 16",
                 IssueDate = new DateTime(2006, 3, 24),
-                IdentificationNumber = "4234787C123PB3",
+                IdentificationNumber = "4234787C123PB6",
                 TownId = 4,
                 Address = "Второапрельская 14",
                 RegistrationTownId = 4,
@@ -215,10 +220,10 @@ public class MySQLContext : DbContext
                 BirthPlace = "Республика Беларусь, Брест",
                 Gender = Gender.Male,
                 PassportSeries = "AС",
-                PassportNumber = "1234569",
+                PassportNumber = "1234566",
                 IssuePlace = "Второоктябрьская 16",
                 IssueDate = new DateTime(2006, 3, 24),
-                IdentificationNumber = "2224787C123PB3",
+                IdentificationNumber = "2224787C123PB7",
                 TownId = 4,
                 Address = "Второапрельская 14",
                 RegistrationTownId = 4,
@@ -239,10 +244,10 @@ public class MySQLContext : DbContext
                 BirthPlace = "Республика Беларусь, Брест",
                 Gender = Gender.Male,
                 PassportSeries = "AС",
-                PassportNumber = "1234569",
+                PassportNumber = "1234565",
                 IssuePlace = "Второоктябрьская 16",
                 IssueDate = new DateTime(2006, 3, 24),
-                IdentificationNumber = "2124787C123PB3",
+                IdentificationNumber = "2124787C123PB8",
                 TownId = 4,
                 Address = "Второапрельская 14",
                 RegistrationTownId = 4,
@@ -263,10 +268,10 @@ public class MySQLContext : DbContext
                 BirthPlace = "Республика Беларусь, Брест",
                 Gender = Gender.Male,
                 PassportSeries = "AС",
-                PassportNumber = "1234569",
+                PassportNumber = "1234564",
                 IssuePlace = "Второоктябрьская 16",
                 IssueDate = new DateTime(2006, 3, 24),
-                IdentificationNumber = "212478C123PB3",
+                IdentificationNumber = "212478C123PB9",
                 TownId = 4,
                 Address = "Второапрельская 14",
                 RegistrationTownId = 4,

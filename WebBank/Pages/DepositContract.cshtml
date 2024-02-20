@@ -1,0 +1,60 @@
+﻿@page
+@model WebBank.Pages.DepositContractModel
+<div class="container">
+	<h1 class="text-center">Открытие депозита на имя @(Model.CurrentClient.Surname + Model.CurrentClient.Name + Model.CurrentClient.Patronymic)</h1>
+	<hr />
+	<form method="post">
+		<div>
+			<h2 class="text-center">Депозитная программа</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Название</th>
+                        <th>Тип</th>
+                        <th>Длительность,<span class="text-nowrap">дней</span></th>
+                        <th>Период снятия процентов,<span class="text-nowrap">дней</span></th>
+                        <th>Ставка,<span class="text-nowrap">% годовых</span></th>
+                        <th>Валюта</th>
+                        <th>Минималный взнос</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.DepositPrograms.Any())
+                    {
+                        @foreach (var program in Model.DepositPrograms)
+                        {
+                            <tr>
+                                <td><input type="radio" asp-for="ChoosenProgram" value="@(program.Id)" /></td>
+                                <td>@program.Name</td>
+                                <td>@(program.Type == AppCore.Entities.DepositType.Revocable ? "Отзывный" : "Безотзывный")</td>
+                                <td>@program.Period</td>
+                                <td>@program.PercentAccessPeriod</td>
+                                <td>@program.Percent</td>
+                                <td>@program.Currency.Notation</td>
+                                <td>@program.MinimumPayment</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="21"><h3>Нет доступных программ</h3></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+		</div>
+		<div>
+			<label asp-for="ContractName">Название счета</label>
+			<input asp-for="ContractName" />
+		</div>
+		<div>
+			<label asp-for="StartPayment">Сумма начального взноса<span class="required-asterisk">*</span></label>
+			<input asp-for="StartPayment" type="number"/>
+		</div>
+		<div class="text-center">
+			<input type="submit" value="Сохранить" />
+		</div>
+	</form>
+</div>
