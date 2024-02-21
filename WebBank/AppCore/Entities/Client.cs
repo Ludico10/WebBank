@@ -10,15 +10,15 @@ public class Client
     public int Id { get; set; }
 
     [MaxLength(50)]
-    [RegularExpression(@"^[А-Я][а-яё]*$")]
+    [RegularExpression(@"^[А-Я][а-яё]+$")]
     public string Name { get; set; }
 
     [MaxLength(50)]
-    [RegularExpression(@"^[А-Я][а-яё]*$")]
+    [RegularExpression(@"^[А-Я][а-яё]+$")]
     public string Surname { get; set; }
 
     [MaxLength(50)]
-    [RegularExpression(@"^[А-Я][а-яё]*$")]
+    [RegularExpression(@"^[А-Я][а-яё]+$")]
     public string Patronymic { get; set; }
 
     [PastDate]
@@ -26,10 +26,12 @@ public class Client
 
     public Gender Gender { get; set; }
 
-    [RegularExpression(@"^[A-Z]{1,2}$")]
+    [MaxLength(2)]
+    [RegularExpression(@"^[A-Z]+$")]
     public string PassportSeries { get; set; }
 
-    [RegularExpression(@"^\d{7,9}$")]
+    [MaxLength(9)]
+    [RegularExpression(@"^\d{7,}$")]
     public string PassportNumber { get; set; }
 
     [MaxLength(300)]
@@ -38,7 +40,8 @@ public class Client
     [PastDate]
     public DateOnly IssueDate { get; set; }
 
-    [RegularExpression(@"^\w{10,20}")]
+    [MaxLength(20)]
+    [RegularExpression(@"^\w{10,}")]
     public string IdentificationNumber { get; set; }
 
     [MaxLength(300)]
@@ -52,13 +55,16 @@ public class Client
     [MaxLength(300)]
     public string Address { get; set; }
 
+    [StringLength(7)]
     [RegularExpression(@"^\d{7}$")]
     public string? HomePhone { get; set; }
 
+    [MaxLength(13)]
     [RegularExpression(@"^(\+375|80)\d{9}$")]
     public string? MobilePhone { get; set; }
 
     [EmailAddress]
+    [MaxLength(100)]
     public string? Email { get; set; }
 
     [MaxLength(300)]
