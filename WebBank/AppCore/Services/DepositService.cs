@@ -1,15 +1,15 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using WebBank.AppCore.Entities;
+﻿using WebBank.AppCore.Entities;
+using WebBank.AppCore.Interfaces;
 using WebBank.Infrastructure.Data;
 
 namespace WebBank.AppCore.Services
 {
-    public class DepositService
+    public class DepositService : IDepositService
     {
         private readonly MySQLContext _context;
 
-        private BankAccount DevelopmentFund { get; }
-        private BankAccount CashAccount { get; }
+        public BankAccount DevelopmentFund { get; }
+        public BankAccount CashAccount { get; }
 
         public DepositService(MySQLContext context)
         {
@@ -97,9 +97,9 @@ namespace WebBank.AppCore.Services
         {
             if (ammount >= depositProgram.MinimumPayment)
             {
-                BankAccount curAccount = new() { Currency = depositProgram.Currency, Name = name + "_текущий", Number = GetFreeNumber("3014"), Type = AccountType.Client };
+                BankAccount curAccount = new() { Currency = depositProgram.Currency, Name = name + "_текущий", Number = GetFreeNumber("3014"), Type = AccountType.Current };
                 _context.BankAccounts.Add(curAccount);
-                BankAccount percAccount = new() { Currency = depositProgram.Currency, Name = name + "_процентный", Number = GetFreeNumber("2400"), Type = AccountType.Client };
+                BankAccount percAccount = new() { Currency = depositProgram.Currency, Name = name + "_процентный", Number = GetFreeNumber("2400"), Type = AccountType.Percent };
                 _context.BankAccounts.Add(percAccount);
                 var endTime = date.AddDays(depositProgram.Period);
                 ClientDeposit deposit = new()
@@ -150,7 +150,7 @@ namespace WebBank.AppCore.Services
                                         deposit.Program.PercentAccessPeriod != null &&
                                         deposit.LastAccess.Date.AddDays(deposit.Program.PercentAccessPeriod.Value) <= time.Date;
 
-            if (deposit.IsActive && deposit.LastAccess.Date.CompareTo(time.Date) < 0 && 
+            if (deposit.IsActive && deposit.LastAccess.Date.CompareTo(time.Date) < 0 &&
                 (deposit.EndDate.Date.CompareTo(time.Date) <= 0 || irrevocableCondition))
             {
                 var percValue = deposit.PercentAccount.Credit - deposit.PercentAccount.Debet;

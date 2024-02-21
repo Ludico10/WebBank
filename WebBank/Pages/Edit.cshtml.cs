@@ -11,7 +11,7 @@ namespace WebBank.Pages
     public class EditModel : PageModel
     {
         private readonly IClientService _clientService;
-        private MySQLContext _context;
+        private readonly MySQLContext _context;
 
         public EditModel(MySQLContext context, IClientService clientService)
         {

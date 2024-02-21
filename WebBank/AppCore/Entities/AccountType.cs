@@ -4,6 +4,7 @@
     {
         Fund,
         Cash,
-        Client
+        Current,
+        Percent
     }
 }

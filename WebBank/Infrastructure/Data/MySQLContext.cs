@@ -5,11 +5,11 @@ namespace WebBank.Infrastructure.Data;
 
 public class MySQLContext : DbContext
 {
-    public readonly string dbPath = "server=localhost;database=bank_db;user=root;password=admin";
+    public readonly string dbPath = "server=localhost;database=bank_db;user=root;password=Phabletik1044";
 
     public MySQLContext()
     {
-        //Database.EnsureDeleted();
+        Database.EnsureDeleted();
         Database.EnsureCreated();
     }
 
@@ -329,6 +329,64 @@ public class MySQLContext : DbContext
                     new { ClientsId = 8, CitizenshipsId = 1 },
                     new { ClientsId = 9, CitizenshipsId = 1 }
                 ]));
+
+        modelBuilder
+            .Entity<Currency>()
+            .HasData(
+            [
+                new() { Id = 1, Name = "белорусский рубль", Notation = "BYN" },
+                new() { Id = 2, Name = "доллар", Notation = "$" }
+            ]);
+
+        modelBuilder
+            .Entity<DepositProgram>()
+            .HasData(
+            [
+                new()
+                {
+                    Id = 1,
+                    Name = "1",
+                    CurrencyId = 1,
+                    Type = DepositType.Revocable,
+                    MinimumPayment = 1000,
+                    Percent = 30,
+                    Period = 365,
+                    PercentAccessPeriod = 35
+                },
+                new()
+                {
+                    Id = 2,
+                    Name = "2",
+                    CurrencyId = 1,
+                    Type = DepositType.Irrevocable,
+                    MinimumPayment = 100,
+                    Percent = 50,
+                    Period = 35
+                }
+            ]);
+
+        modelBuilder
+            .Entity<BankAccount>()
+            .HasData(
+            [
+                new()
+                {
+                    Id = 1,
+                    Name = "Касса",
+                    Number = "0000000000009",
+                    CurrencyId = 1,
+                    Type = AccountType.Cash,
+                },
+                new()
+                {
+                    Id = 2,
+                    Name = "Фонд развития",
+                    Number = "0001000000009",
+                    CurrencyId = 1,
+                    Type = AccountType.Fund,
+                    Credit = 1000000000
+                }
+            ]);
 #endif
     }
 }

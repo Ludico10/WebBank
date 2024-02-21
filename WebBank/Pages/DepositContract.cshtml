@@ -1,11 +1,13 @@
 ﻿@page
 @model WebBank.Pages.DepositContractModel
 <div class="container">
-	<h1 class="text-center">Открытие депозита на имя @(Model.CurrentClient.Surname + Model.CurrentClient.Name + Model.CurrentClient.Patronymic)</h1>
+	<h1 class="text-center">Открытие депозита на имя @(Model.CurrentClient != null ? Model.CurrentClient!.Surname + " " + Model.CurrentClient!.Name + " " + Model.CurrentClient!.Patronymic : "")</h1>
 	<hr />
 	<form method="post">
+        <input asp-for="CurrentClient" value="@Model.CurrentClient" type="hidden" />
+        <input asp-for="ChoosenProgram" value="@Model.ChoosenProgram" type="hidden" />
 		<div>
-			<h2 class="text-center">Депозитная программа</h2>
+			<h2>Депозитная программа</h2>
             <table border="1">
                 <thead>
                     <tr>
@@ -25,11 +27,11 @@
                         @foreach (var program in Model.DepositPrograms)
                         {
                             <tr>
-                                <td><input type="radio" asp-for="ChoosenProgram" value="@(program.Id)" /></td>
+                                <td><input type="radio" asp-for="ChoosenProgram" value="@program" /></td>
                                 <td>@program.Name</td>
                                 <td>@(program.Type == AppCore.Entities.DepositType.Revocable ? "Отзывный" : "Безотзывный")</td>
                                 <td>@program.Period</td>
-                                <td>@program.PercentAccessPeriod</td>
+                                <td>@(program.PercentAccessPeriod != null ? program.PercentAccessPeriod : "-")</td>
                                 <td>@program.Percent</td>
                                 <td>@program.Currency.Notation</td>
                                 <td>@program.MinimumPayment</td>
@@ -45,10 +47,12 @@
                 </tbody>
             </table>
 		</div>
+        </br>
 		<div>
 			<label asp-for="ContractName">Название счета</label>
 			<input asp-for="ContractName" />
 		</div>
+        </br>
 		<div>
 			<label asp-for="StartPayment">Сумма начального взноса<span class="required-asterisk">*</span></label>
 			<input asp-for="StartPayment" type="number"/>

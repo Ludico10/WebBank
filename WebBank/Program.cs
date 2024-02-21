@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<MySQLContext>();
 builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IDepositService, DepositService>();
 
 var app = builder.Build();
 
