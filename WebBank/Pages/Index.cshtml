@@ -42,9 +42,9 @@
                         <td>@($"{client.Surname} {client.Name} {client.Patronymic}")</td>
                         <td>@client.Birthday.ToString("dd.MM.yyyy")</td>
                         <td>@(client.Gender == AppCore.Entities.Gender.Female ? "Женщина" : "Мужчина")</td>
-                        <td>@client.FamilyStatus.Name</td>
+                        <td>@client.FamilyStatus!.Name</td>
                         <td>@string.Join(", ", client.Citizenships.Select(cc => cc.Citizenship.Name))</td>
-                        <td>@client.DisabilityGroup.Name</td>
+                        <td>@client.DisabilityGroup!.Name</td>
                         <td>@(client.IsPensioner ? "Да" : "Нет")</td>
                         <td>@(client.IsConscript ? "Да" : "Нет")</td>
                         <td>@(client.PassportSeries + client.PassportNumber)</td>
@@ -52,14 +52,14 @@
                         <td>@client.IssuePlace</td>
                         <td>@client.IssueDate.ToString("dd.MM.yyyy")</td>
                         <td>@client.BirthPlace</td>
-                        <td>@($"г.{client.RegistrationTown.Name} {client.RegistrationAddress}")</td>
-                        <td>@($"г.{client.Town.Name} {client.Address}")</td>
+                        <td>@($"г.{client.RegistrationTown!.Name} {client.RegistrationAddress}")</td>
+                        <td>@($"г.{client.Town!.Name} {client.Address}")</td>
                         <td>@(client.HomePhone ?? "-")</td>
                         <td>@(client.MobilePhone ?? "-")</td>
                         <td>@(client.Email ?? "-")</td>
                         <td>@(client.WorkPlace ?? "-")</td>
                         <td>@(client.WorkPosition ?? "-")</td>
-                        <td>@(client.MonthlyIncome == null ? "-" : client.MonthlyIncome / 100.0)</td>
+                        <td>@(client.MonthlyIncome == null ? "-" : client.MonthlyIncome)</td>
                         <td>
                             <div class="parent">
                                 <form method="post">

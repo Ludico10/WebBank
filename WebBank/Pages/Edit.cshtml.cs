@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using WebBank.AppCore.Entities;
 using WebBank.AppCore.Interfaces;
 using WebBank.Infrastructure.Data;
@@ -37,40 +38,34 @@ namespace WebBank.Pages
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id != null)
-            {
-                var client = await _clientService.Find(id.Value);
-                if (client == null)
-                    return RedirectToPage("Error");
+            if (id == null) return Page();
 
-                Client = client;
-                CitizenshipIds = Client.Citizenships.Select(cc => cc.Citizenship.Id).ToList();
-            }
+            var client = await _clientService.Find(id.Value);
+            if (client == null) return RedirectToPage("Error");
+
+            Client = client;
+            CitizenshipIds = Client.Citizenships.Select(cc => cc.Citizenship.Id).ToList();
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (Client != null && CitizenshipIds != null)
-            {
-                Client.Citizenships.Clear();
-                foreach (var cid in CitizenshipIds)
-                {
-                    Client.Citizenships.Add(new ClientCitizenship { CitizenshipId = cid });
-                }
-                if (id != null)
-                {
-                    await _clientService.Edit(Client);
-                }
-                else
-                {
-                    await _clientService.Add(Client);
-                }
+            if (Client == null || CitizenshipIds == null) return Page();
 
-                return RedirectToPage("Index");
+            if (!ModelState.IsValid) return RedirectToPage("Error");
+
+            Client.Citizenships.Clear();
+            Client.Citizenships.AddRange(CitizenshipIds.Select(id => new ClientCitizenship { CitizenshipId = id }));
+            if (id != null)
+            {
+                await _clientService.Edit(Client);
+            }
+            else
+            {
+                await _clientService.Add(Client);
             }
 
-            return Page();
+            return RedirectToPage("Index");
         }
     }
 }
