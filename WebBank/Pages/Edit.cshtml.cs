@@ -58,6 +58,10 @@ namespace WebBank.Pages
                                         .Select(x => x.ErrorMessage));
                 return RedirectToPage("Error", new { message });
             }
+            if (Client.IssueDate < Client.Birthday)
+            {
+                return RedirectToPage("Error", new { message = "Issue date can not be lesser than birthday" });
+            }
 
             Client.Citizenships.Clear();
             Client.Citizenships.AddRange(CitizenshipIds.Select(id => new ClientCitizenship { CitizenshipId = id }));

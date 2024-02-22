@@ -40,7 +40,7 @@
                 <label asp-for="Client.Birthday">День рождения<span class="required-asterisk">*</span></label>
                 <input type="date" required max=@DateTime.Now.ToString("yyyy-MM-dd") class="form-control" asp-for="Client.Birthday" />
                 <div class="invalid-feedback">
-                    День рождение обязательно и не позднее сегодня
+                    День рождение должно являтся корректной датой не позднее сегоднешнего дня
                 </div>
             </div>
             <br />
@@ -123,7 +123,7 @@
                 <label asp-for="Client.IssueDate">Дата выдачи<span class="required-asterisk">*</span></label>
                 <input type="date" required max=@DateTime.Now.ToString("yyyy-MM-dd") class="form-control" asp-for="Client.IssueDate" />
                 <div class="invalid-feedback">
-                    Дата выдачи обязательна и не позже сегодня
+                    Дата выдачи должна являтся корректной датой не позднее сегоднешнего дня
                 </div>
             </div>
         </div>
