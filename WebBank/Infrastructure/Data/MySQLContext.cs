@@ -19,6 +19,7 @@ public class MySQLContext : DbContext
     public DbSet<Citizenship> Citizenships => Set<Citizenship>();
     public DbSet<DisabilityGroup> DisabilityGroups => Set<DisabilityGroup>();
     public DbSet<FamilyStatus> FamilyStatuses => Set<FamilyStatus>();
+    public DbSet<ClientCitizenship> ClientCitizenships => Set<ClientCitizenship>();
     public DbSet<Currency> Currencies => Set<Currency>();
     public DbSet<DepositProgram> DepositPrograms => Set<DepositProgram>();
     public DbSet<BankAccount> BankAccounts => Set<BankAccount>();
@@ -47,10 +48,12 @@ public class MySQLContext : DbContext
     {
         modelBuilder
             .Entity<Client>()
-            .HasAlternateKey(c => c.IdentificationNumber);
+            .HasIndex(c => c.IdentificationNumber)
+            .IsUnique();
         modelBuilder
             .Entity<Client>()
-            .HasAlternateKey(c => new { c.PassportSeries, c.PassportNumber });
+            .HasIndex(c => new { c.PassportSeries, c.PassportNumber })
+            .IsUnique();
 
 #if DEBUG
         modelBuilder
@@ -135,7 +138,7 @@ public class MySQLContext : DbContext
                         Birthday = new DateOnly(2000, 2, 2),
                         BirthPlace = "Республика Беларусь, Брестская обл, д. Горки, дом 72",
                         Gender = Gender.Male,
-                        PassportSeries = "AС",
+                        PassportSeries = "AC",
                         PassportNumber = "2234567",
                         IssuePlace = "Второоктябрьская 15",
                         IssueDate = new DateOnly(2002, 3, 23),
@@ -159,7 +162,7 @@ public class MySQLContext : DbContext
                         Birthday = new DateOnly(2003, 7, 25),
                         BirthPlace = "Республика Беларусь, Брест",
                         Gender = Gender.Male,
-                        PassportSeries = "AС",
+                        PassportSeries = "AC",
                         PassportNumber = "3234567",
                         IssuePlace = "Второоктябрьская 16",
                         IssueDate = new DateOnly(2005, 3, 23),
@@ -183,7 +186,7 @@ public class MySQLContext : DbContext
                         Birthday = new DateOnly(2004, 7, 25),
                         BirthPlace = "Республика Беларусь, Брест",
                         Gender = Gender.Female,
-                        PassportSeries = "AС",
+                        PassportSeries = "AC",
                         PassportNumber = "4234567",
                         IssuePlace = "Второоктябрьская 16",
                         IssueDate = new DateOnly(2005, 3, 24),
@@ -207,7 +210,7 @@ public class MySQLContext : DbContext
                         Birthday = new DateOnly(2004, 7, 25),
                         BirthPlace = "Республика Беларусь, Брест",
                         Gender = Gender.Female,
-                        PassportSeries = "AС",
+                        PassportSeries = "AC",
                         PassportNumber = "5234567",
                         IssuePlace = "Второоктябрьская 16",
                         IssueDate = new DateOnly(2005, 3, 24),
@@ -231,7 +234,7 @@ public class MySQLContext : DbContext
                         Birthday = new DateOnly(2005, 7, 25),
                         BirthPlace = "Республика Беларусь, Брест",
                         Gender = Gender.Female,
-                        PassportSeries = "AС",
+                        PassportSeries = "AC",
                         PassportNumber = "6234567",
                         IssuePlace = "Второоктябрьская 16",
                         IssueDate = new DateOnly(2006, 3, 24),
@@ -255,7 +258,7 @@ public class MySQLContext : DbContext
                         Birthday = new DateOnly(2005, 7, 25),
                         BirthPlace = "Республика Беларусь, Брест",
                         Gender = Gender.Male,
-                        PassportSeries = "AС",
+                        PassportSeries = "AC",
                         PassportNumber = "7234567",
                         IssuePlace = "Второоктябрьская 16",
                         IssueDate = new DateOnly(2006, 3, 24),
@@ -279,7 +282,7 @@ public class MySQLContext : DbContext
                         Birthday = new DateOnly(2005, 7, 25),
                         BirthPlace = "Республика Беларусь, Брест",
                         Gender = Gender.Male,
-                        PassportSeries = "AС",
+                        PassportSeries = "AC",
                         PassportNumber = "8234567",
                         IssuePlace = "Второоктябрьская 16",
                         IssueDate = new DateOnly(2006, 3, 24),
@@ -303,7 +306,7 @@ public class MySQLContext : DbContext
                         Birthday = new DateOnly(2005, 7, 25),
                         BirthPlace = "Республика Беларусь, Брест",
                         Gender = Gender.Male,
-                        PassportSeries = "AС",
+                        PassportSeries = "AC",
                         PassportNumber = "9234567",
                         IssuePlace = "Второоктябрьская 16",
                         IssueDate = new DateOnly(2006, 3, 24),
@@ -321,22 +324,20 @@ public class MySQLContext : DbContext
                 ]);
 
         modelBuilder
-            .Entity<Client>()
-            .HasMany(e => e.Citizenships)
-            .WithMany(e => e.Clients)
-            .UsingEntity(j => j.HasData(
+            .Entity<ClientCitizenship>()
+            .HasData(
                 [
-                    new { ClientsId = 1, CitizenshipsId = 1 },
-                    new { ClientsId = 2, CitizenshipsId = 1 },
-                    new { ClientsId = 2, CitizenshipsId = 2 },
-                    new { ClientsId = 3, CitizenshipsId = 1 },
-                    new { ClientsId = 4, CitizenshipsId = 1 },
-                    new { ClientsId = 5, CitizenshipsId = 1 },
-                    new { ClientsId = 6, CitizenshipsId = 1 },
-                    new { ClientsId = 7, CitizenshipsId = 1 },
-                    new { ClientsId = 8, CitizenshipsId = 1 },
-                    new { ClientsId = 9, CitizenshipsId = 1 }
-                ]));
+                    new () { ClientId = 1, CitizenshipId = 1 },
+                    new () { ClientId = 2, CitizenshipId = 1 },
+                    new () { ClientId = 2, CitizenshipId = 2 },
+                    new () { ClientId = 3, CitizenshipId = 1 },
+                    new () { ClientId = 4, CitizenshipId = 1 },
+                    new () { ClientId = 5, CitizenshipId = 1 },
+                    new () { ClientId = 6, CitizenshipId = 1 },
+                    new () { ClientId = 7, CitizenshipId = 1 },
+                    new () { ClientId = 8, CitizenshipId = 1 },
+                    new () { ClientId = 9, CitizenshipId = 1 }
+                ]);
 
         modelBuilder
             .Entity<Currency>()

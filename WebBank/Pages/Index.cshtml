@@ -5,9 +5,10 @@
 
 <div class="text-center">
     <h2>Список пользователей</h2>
-    <table border="1">
+    <table border="1" style="margin: 0 auto;">
         <thead>
             <tr>
+                <th></th>
                 <th>ID</th>
                 <th>ФИО</th>
                 <th>День рождения</th>
@@ -38,28 +39,6 @@
                 @foreach (var client in Model.Clients)
                 {
                     <tr>
-                        <td>@client.Id</td>
-                        <td>@($"{client.Surname} {client.Name} {client.Patronymic}")</td>
-                        <td>@client.Birthday.ToString("dd.MM.yyyy")</td>
-                        <td>@(client.Gender == AppCore.Entities.Gender.Female ? "Женщина" : "Мужчина")</td>
-                        <td>@client.FamilyStatus.Name</td>
-                        <td>@string.Join(", ", client.Citizenships.Select(c => c.Name))</td>
-                        <td>@client.DisabilityGroup.Name</td>
-                        <td>@(client.IsPensioner ? "Да" : "Нет")</td>
-                        <td>@(client.IsConscript ? "Да" : "Нет")</td>
-                        <td>@(client.PassportSeries + client.PassportNumber)</td>
-                        <td>@client.IdentificationNumber</td>
-                        <td>@client.IssuePlace</td>
-                        <td>@client.IssueDate.ToString("dd.MM.yyyy")</td>
-                        <td>@client.BirthPlace</td>
-                        <td>@($"г.{client.RegistrationTown.Name} {client.RegistrationAddress}")</td>
-                        <td>@($"г.{client.Town.Name} {client.Address}")</td>
-                        <td>@(client.HomePhone ?? "-")</td>
-                        <td>@(client.MobilePhone ?? "-")</td>
-                        <td>@(client.Email ?? "-")</td>
-                        <td>@(client.WorkPlace ?? "-")</td>
-                        <td>@(client.WorkPosition ?? "-")</td>
-                        <td>@(client.MonthlyIncome == null ? "-" : client.MonthlyIncome / 100.0)</td>
                         <td>
                             <div class="parent">
                                 <form method="post">
@@ -71,8 +50,29 @@
                                     </button>
                                 </form>
                             </div>
-
                         </td>
+                        <td>@client.Id</td>
+                        <td>@($"{client.Surname} {client.Name} {client.Patronymic}")</td>
+                        <td>@client.Birthday.ToString("dd.MM.yyyy")</td>
+                        <td>@(client.Gender == AppCore.Entities.Gender.Female ? "Женщина" : "Мужчина")</td>
+                        <td>@client.FamilyStatus!.Name</td>
+                        <td>@string.Join(", ", client.Citizenships.Select(cc => cc.Citizenship.Name))</td>
+                        <td>@client.DisabilityGroup!.Name</td>
+                        <td>@(client.IsPensioner ? "Да" : "Нет")</td>
+                        <td>@(client.IsConscript ? "Да" : "Нет")</td>
+                        <td>@(client.PassportSeries + client.PassportNumber)</td>
+                        <td>@client.IdentificationNumber</td>
+                        <td>@client.IssuePlace</td>
+                        <td>@client.IssueDate.ToString("dd.MM.yyyy")</td>
+                        <td>@client.BirthPlace</td>
+                        <td>@($"г.{client.RegistrationTown!.Name} {client.RegistrationAddress}")</td>
+                        <td>@($"г.{client.Town!.Name} {client.Address}")</td>
+                        <td>@(client.HomePhone ?? "-")</td>
+                        <td>@(client.MobilePhone ?? "-")</td>
+                        <td>@(client.Email ?? "-")</td>
+                        <td>@(client.WorkPlace ?? "-")</td>
+                        <td>@(client.WorkPosition ?? "-")</td>
+                        <td>@(client.MonthlyIncome == null ? "-" : client.MonthlyIncome)</td>
                     </tr>
                 }
             }

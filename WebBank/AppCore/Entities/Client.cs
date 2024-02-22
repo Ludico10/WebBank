@@ -1,50 +1,47 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WebBank.AppCore.Attributes;
 
 namespace WebBank.AppCore.Entities;
 
 public class Client
 {
-
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public int Id { get; set; }
 
     [MaxLength(50)]
-    [RegularExpression(@"^[А-Я][а-я]*$")]
+    [RegularExpression(@"^[А-Я][а-яё]+$")]
     public string Name { get; set; }
 
     [MaxLength(50)]
-    [RegularExpression(@"^[А-Я][а-я]*$")]
+    [RegularExpression(@"^[А-Я][а-яё]+$")]
     public string Surname { get; set; }
 
     [MaxLength(50)]
-    [RegularExpression(@"^[А-Я][а-я]*$")]
+    [RegularExpression(@"^[А-Я][а-яё]+$")]
     public string Patronymic { get; set; }
 
-    //не больше сегодняшней даты - 18 лет
+    [PastDate]
     public DateOnly Birthday { get; set; }
 
     public Gender Gender { get; set; }
 
-    //серия + номер = альтернативный ключ
-    [StringLength(2)]
-    [RegularExpression(@"^[A-ZА-Я]{2}$")]
+    [MaxLength(2)]
+    [RegularExpression(@"^[A-Z]+$")]
     public string PassportSeries { get; set; }
 
-    //серия + номер = альтернативный ключ
-    [StringLength(7)]
-    [RegularExpression(@"^\d{7}$")]
+    [MaxLength(9)]
+    [RegularExpression(@"^\d{7,}$")]
     public string PassportNumber { get; set; }
 
     [MaxLength(300)]
     public string IssuePlace { get; set; }
 
-    //не больше сегодняшней даты
+    [PastDate]
     public DateOnly IssueDate { get; set; }
 
-    //альтернативный ключ
-    [StringLength(14)]
-    [RegularExpression(@"^\w{14}")]
+    [MaxLength(20)]
+    [RegularExpression(@"^\w{10,}$")]
     public string IdentificationNumber { get; set; }
 
     [MaxLength(300)]
@@ -53,7 +50,7 @@ public class Client
     [ForeignKey(nameof(Town))]
     public int TownId { get; set; }
 
-    public virtual Town Town { get; set; }
+    public virtual Town? Town { get; set; }
 
     [MaxLength(300)]
     public string Address { get; set; }
@@ -66,8 +63,8 @@ public class Client
     [RegularExpression(@"^(\+375|80)\d{9}$")]
     public string? MobilePhone { get; set; }
 
+    [EmailAddress]
     [MaxLength(100)]
-    [RegularExpression(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$")] //со стековерфлоу, не проверял, и вообще регэкспами так никто уже не делает, есть класс MailAddress
     public string? Email { get; set; }
 
     [MaxLength(300)]
@@ -79,7 +76,7 @@ public class Client
     [ForeignKey(nameof(RegistrationTown))]
     public int RegistrationTownId { get; set; }
 
-    public virtual Town RegistrationTown { get; set; }
+    public virtual Town? RegistrationTown { get; set; }
 
     [MaxLength(300)]
     public string RegistrationAddress { get; set; }
@@ -87,12 +84,12 @@ public class Client
     [ForeignKey(nameof(FamilyStatus))]
     public int FamilyStatusId { get; set; }
 
-    public virtual FamilyStatus FamilyStatus { get; set; }
+    public virtual FamilyStatus? FamilyStatus { get; set; }
 
     [ForeignKey(nameof(DisabilityGroup))]
     public int DisabilityGroupId { get; set; }
 
-    public virtual DisabilityGroup DisabilityGroup { get; set; }
+    public virtual DisabilityGroup? DisabilityGroup { get; set; }
 
     public bool IsPensioner { get; set; }
 
@@ -102,7 +99,7 @@ public class Client
 
     public bool IsActive { get; set; }
 
-    public virtual List<Citizenship> Citizenships { get; set; } = [];
+    public virtual List<ClientCitizenship> Citizenships { get; set; } = [];
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

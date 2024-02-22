@@ -26,47 +26,66 @@ namespace WebBank.Pages
         }
 
         [BindProperty]
-        public Client? Client { get; set; }
+        public Client Client { get; set; } = new();
+
         public SelectList TownOptions { get; set; }
         public SelectList FamilyStatusOptions { get; set; }
         public SelectList DisabilityGroupOptions { get; set; }
         public SelectList CitizenshipOptions { get; set; }
 
         [BindProperty]
-        public List<int>? CitizenshipIds { get; set; }
+        public List<int> CitizenshipIds { get; set; } = [];
         public DateOnly SystemDate { get; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id != null)
-            {
-                Client = await _clientService.Find(id.Value);
-                if (Client == null)
-                    return RedirectToPage("Error");
-                CitizenshipIds = Client.Citizenships.Select(c => c.Id).ToList();
-            }
+            if (id == null) return Page();
+
+            var client = await _clientService.Find(id.Value);
+            if (client == null) return NotFound();
+
+            Client = client;
+            CitizenshipIds = Client.Citizenships.Select(cc => cc.Citizenship.Id).ToList();
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (Client != null && CitizenshipIds != null)
+            if (Client == null || CitizenshipIds == null) return Page();
+
+            if (!ModelState.IsValid)
             {
-                Client.Citizenships.Clear();
-                Client.Citizenships.AddRange(CitizenshipIds!.Select(id => _context.Citizenships.First(x => x.Id == id)));
-                if (id != null)
-                {
-                    await _clientService.Edit(Client);
-                }
-                else
+                var message = string.Join("<br />", ModelState.Values
+                                        .SelectMany(x => x.Errors)
+                                        .Select(x => x.ErrorMessage));
+                return RedirectToPage("Error", new { message });
+            }
+            if (Client.IssueDate < Client.Birthday)
+            {
+                return RedirectToPage("Error", new { message = "Issue date can not be lesser than birthday" });
+            }
+
+            Client.Citizenships.Clear();
+            Client.Citizenships.AddRange(CitizenshipIds.Select(id => new ClientCitizenship { CitizenshipId = id }));
+            try
+            {
+                if (id == null)
                 {
                     await _clientService.Add(Client);
                 }
-
-                return RedirectToPage("Index");
+                else
+                {
+                    await _clientService.Edit(Client);
+                }
             }
-
-            return Page();
+            catch (DbUpdateException e)
+            {
+                return RedirectToPage("Error", new
+                {
+                    message = $"Failed to {(id == null ? "add" : "edit")} entity<br />" + e.InnerException?.Message
+                });
+            }
+            return RedirectToPage("Index");
         }
     }
 }

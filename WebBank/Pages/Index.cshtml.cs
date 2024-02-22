@@ -11,7 +11,7 @@ namespace WebBank.Pages
     {
         private readonly IClientService _clientService = clientService;
 
-        private const int itemsOnPage = 5;
+        private const int itemsOnPage = 10;
 
         public DateOnly SystemDate { get; } = timeService.GetSystemDate();
         public List<Client> Clients { get; private set; } = [];
@@ -32,7 +32,7 @@ namespace WebBank.Pages
 
             if (pageNumber <= 0 || pageNumber > PagesCount)
             {
-                return RedirectToPage("Error");
+                return NotFound();
             }
 
             Clients = await _clientService.GetPage(pageNumber, itemsOnPage);
