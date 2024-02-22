@@ -1,11 +1,10 @@
 ﻿@page
 @model WebBank.Pages.DepositContractModel
 <div class="container">
-	<h1 class="text-center">Открытие депозита на имя @(Model.CurrentClient != null ? Model.CurrentClient!.Surname + " " + Model.CurrentClient!.Name + " " + Model.CurrentClient!.Patronymic : "")</h1>
+	<h1 class="text-center">Открытие депозита на имя @Model.ClientName</h1>
 	<hr />
 	<form method="post">
-        <input asp-for="CurrentClient" value="@Model.CurrentClient" type="hidden" />
-        <input asp-for="ChoosenProgram" value="@Model.ChoosenProgram" type="hidden" />
+        <input asp-for="ClientId" value="@Model.ClientId" type="hidden" />
 		<div>
 			<h2>Депозитная программа</h2>
             <table border="1">
@@ -27,7 +26,7 @@
                         @foreach (var program in Model.DepositPrograms)
                         {
                             <tr>
-                                <td><input type="radio" asp-for="ChoosenProgram" value="@program" /></td>
+                                <td><input type="radio" asp-for="ChoosenProgram" value="@program.Id" /></td>
                                 <td>@program.Name</td>
                                 <td>@(program.Type == AppCore.Entities.DepositType.Revocable ? "Отзывный" : "Безотзывный")</td>
                                 <td>@program.Period</td>
@@ -62,3 +61,7 @@
 		</div>
 	</form>
 </div>
+
+@section Footer {
+    @Model.SystemDate
+}

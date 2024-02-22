@@ -9,6 +9,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<MySQLContext>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IDepositService, DepositService>();
+builder.Services.AddScoped<ITimeService, TimeImitationService>();
 
 var app = builder.Build();
 

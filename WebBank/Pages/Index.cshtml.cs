@@ -7,14 +7,13 @@ using static System.Math;
 
 namespace WebBank.Pages
 {
-    public class IndexModel(MySQLContext context, IClientService clientService, ILogger<IndexModel> logger) : PageModel
+    public class IndexModel(IClientService clientService, ITimeService timeService) : PageModel
     {
-        private readonly ILogger<IndexModel> _logger = logger;
-        private readonly MySQLContext _context = context;
         private readonly IClientService _clientService = clientService;
 
         private const int itemsOnPage = 5;
 
+        public DateOnly SystemDate { get; } = timeService.GetSystemDate();
         public List<Client> Clients { get; private set; } = [];
         public int PagesCount { get; private set; } = 1;
         public int PageNumber { get; set; }

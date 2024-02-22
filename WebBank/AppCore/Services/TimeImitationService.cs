@@ -1,24 +1,47 @@
-﻿namespace WebBank.AppCore.Services
+﻿using WebBank.AppCore.Interfaces;
+using WebBank.Infrastructure.Data;
+
+namespace WebBank.AppCore.Services
 {
-    public class TimeImitationService(DateTime dateTime, DepositService depositService)
+    public class TimeImitationService : ITimeService
     {
-        private readonly DepositService _depositService = depositService;
+        private readonly IDepositService _depositService;
+        private readonly MySQLContext _context;
 
-        private DateTime sysDate = dateTime;
+        public DateTime sysTime;
 
-        public void SkipToDate(DateTime date)
+        public TimeImitationService(MySQLContext context, IDepositService depositService)
         {
-            while (sysDate.CompareTo(date) < 0)
+            _depositService = depositService;
+            _context = context;
+            var timeInfo = _context.SystemInformation.FirstOrDefault(si => si.Name == "TimeDifference");
+            var dif = (timeInfo != null) ? Convert.ToInt32(timeInfo.Value) : 0;
+            sysTime = DateTime.Now.AddDays(dif);
+        }
+
+        public DateOnly GetSystemDate()
+        {
+            return new DateOnly(sysTime.Year, sysTime.Month, sysTime.Day);
+        }
+
+        public async Task SkipDays(int count)
+        {
+            for (int i = 0; i < count; i++)
             {
                 //выдача клиентам средств по завершенным программам
-                _depositService.DailyCompletion(sysDate);
+                _depositService.DailyCompletion(sysTime).Wait();
                 //снятие клиентами набежавших по отзывным вкладам процентов
-                _depositService.DailyInterestWithdrawal(sysDate);
-                //начисление процентов в конце дня
-                _depositService.Process(sysDate);
+                _depositService.DailyInterestWithdrawal(sysTime).Wait();
                 //начало нового дня
-                sysDate = sysDate.AddDays(1);
+                sysTime = sysTime.AddDays(1);
+                //начисление процентов в 00:00
+                _depositService.Process(sysTime.Date).Wait();
             }
+
+            var timeInfo = _context.SystemInformation.FirstOrDefault(si => si.Name == "TimeDifference");
+            if (timeInfo != null)
+                timeInfo.Value = (Convert.ToInt32(timeInfo.Value) + count).ToString();
+            await _context.SaveChangesAsync();
         }
     }
 }

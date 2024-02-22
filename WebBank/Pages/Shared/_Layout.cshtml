@@ -22,6 +22,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Список клиентов</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/AccountsState">Состояние счетов</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -36,6 +39,10 @@
     <footer class="border-top footer text-muted">
         <div class="container-fluid">
             &copy; 2024 - WebBank
+            @if (IsSectionDefined("Footer"))
+            {
+                @RenderSection("Footer")
+            }
         </div>
     </footer>
 

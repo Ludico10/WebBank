@@ -8,11 +8,11 @@ namespace WebBank.AppCore.Interfaces
         public BankAccount CashAccount { get; }
 
         public void SetStartingFund(int amount);
-        public void Create(Client client, DepositProgram depositProgram, int ammount, DateTime date, string name = "Безымянный");
-        public void Process(DateTime systemDate);
-        public void DailyInterestWithdrawal(DateTime sysDate);
-        public void InterestWithdrawal(ClientDeposit deposit, DateTime time);
-        public void DailyCompletion(DateTime systemDate);
-        public void Completion(ClientDeposit deposit, DateTime time);
+        public Task Create(Client client, DepositProgram depositProgram, int ammount, DateTime date, string name = "Безымянный");
+        public Task Process(DateTime systemDate);
+        public Task DailyInterestWithdrawal(DateTime sysDate);
+        public Task InterestWithdrawal(ClientDeposit deposit, DateTime time);
+        public Task DailyCompletion(DateTime systemDate);
+        public Task Completion(ClientDeposit deposit, DateTime time);
     }
 }

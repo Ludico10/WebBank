@@ -188,3 +188,11 @@
         </tbody>
     </table>
 </div>
+
+@section Footer {
+    @Model.SystemDate
+    <form method="post">
+        <input type="submit" value="+" />
+        <input type="number" name="dateDif" />
+    </form>
+}

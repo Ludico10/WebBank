@@ -9,10 +9,11 @@ public class MySQLContext : DbContext
 
     public MySQLContext()
     {
-        Database.EnsureDeleted();
+        //Database.EnsureDeleted();
         Database.EnsureCreated();
     }
 
+    public DbSet<SystemInformation> SystemInformation => Set<SystemInformation>();
     public DbSet<Client> Clients => Set<Client>();
     public DbSet<Town> Towns => Set<Town>();
     public DbSet<Citizenship> Citizenships => Set<Citizenship>();
@@ -52,6 +53,13 @@ public class MySQLContext : DbContext
             .HasAlternateKey(c => new { c.PassportSeries, c.PassportNumber });
 
 #if DEBUG
+        modelBuilder
+            .Entity<SystemInformation>()
+            .HasData(
+            [
+                new() { Id = 1, Name = "TimeDifference", Value = "0" }
+            ]);
+
         modelBuilder
             .Entity<Town>()
             .HasData(

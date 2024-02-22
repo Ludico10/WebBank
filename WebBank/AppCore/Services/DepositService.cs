@@ -1,4 +1,5 @@
-﻿using WebBank.AppCore.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using WebBank.AppCore.Entities;
 using WebBank.AppCore.Interfaces;
 using WebBank.Infrastructure.Data;
 
@@ -30,7 +31,7 @@ namespace WebBank.AppCore.Services
             DevelopmentFund.Credit = amount;
         }
 
-        private void MakeTransaction(BankAccount? fromAccount, bool fromDebet, BankAccount? toAccount, bool toDebet, DateTime time, int ammount)
+        private async Task MakeTransaction(BankAccount? fromAccount, bool fromDebet, BankAccount? toAccount, bool toDebet, DateTime time, int ammount)
         {
             Transaction transaction = new()
             {
@@ -56,7 +57,7 @@ namespace WebBank.AppCore.Services
                     toAccount.Credit += ammount;
             }
             _context.Transactions.Add(transaction);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         private static int GetNumberPlace(int number)
@@ -93,14 +94,14 @@ namespace WebBank.AppCore.Services
             return result + CalculateChecksum(result).ToString();
         }
 
-        public void Create(Client client, DepositProgram depositProgram, int ammount, DateTime date, string name = "Безымянный")
+        public async Task Create(Client client, DepositProgram depositProgram, int ammount, DateTime date, string name = "Безымянный")
         {
             if (ammount >= depositProgram.MinimumPayment)
             {
                 BankAccount curAccount = new() { Currency = depositProgram.Currency, Name = name + "_текущий", Number = GetFreeNumber("3014"), Type = AccountType.Current };
-                _context.BankAccounts.Add(curAccount);
+                await _context.BankAccounts.AddAsync(curAccount);
                 BankAccount percAccount = new() { Currency = depositProgram.Currency, Name = name + "_процентный", Number = GetFreeNumber("2400"), Type = AccountType.Percent };
-                _context.BankAccounts.Add(percAccount);
+                 await _context.BankAccounts.AddAsync(percAccount);
                 var endTime = date.AddDays(depositProgram.Period);
                 ClientDeposit deposit = new()
                 {
@@ -109,42 +110,45 @@ namespace WebBank.AppCore.Services
                     PercentAccount = percAccount,
                     Program = depositProgram,
                     StartDate = date,
+                    LastAccess = date,
                     EndDate = endTime,
                     InitialAmount = ammount
                 };
-                _context.ClientDeposits.Add(deposit);
+                await _context.ClientDeposits.AddAsync(deposit);
                 //внесение денег в кассу
-                MakeTransaction(null, false, CashAccount, true, date, ammount);
+                await MakeTransaction(null, false, CashAccount, true, date, ammount);
                 //перевод денег с кассы на текущий счет
-                MakeTransaction(CashAccount, false, curAccount, false, date, ammount);
+                await MakeTransaction(CashAccount, false, curAccount, false, date, ammount);
                 //использование денег банком
-                MakeTransaction(curAccount, true, DevelopmentFund, false, date, ammount);
+                await MakeTransaction(curAccount, true, DevelopmentFund, false, date, ammount);
+
+                await _context.SaveChangesAsync();
             }
         }
 
-        public void Process(DateTime systemDate)
+        public async Task Process(DateTime systemDate)
         {
-            foreach (var deposit in _context.ClientDeposits.Where(d => d.IsActive))
+            foreach (var deposit in await _context.ClientDeposits.Where(d => d.IsActive).ToListAsync())
             {
                 double daysCount = DateTime.IsLeapYear(systemDate.Year) ? 366.0 : 365.0;
                 if (deposit.EndDate.Date.CompareTo(systemDate.Date) > 0)
                 {
                     var incValue = Convert.ToInt32(deposit.InitialAmount * deposit.Program.Percent / daysCount / 100.0);
                     //начисление процентов по депозиту
-                    MakeTransaction(DevelopmentFund, true, deposit.PercentAccount, false, systemDate, incValue);
+                    await MakeTransaction(DevelopmentFund, true, deposit.PercentAccount, false, systemDate, incValue);
                 }
             }
         }
 
-        public void DailyInterestWithdrawal(DateTime sysDate)
+        public async Task DailyInterestWithdrawal(DateTime sysDate)
         {
-            foreach (var deposit in _context.ClientDeposits.Where(d => d.IsActive))
+            foreach (var deposit in await _context.ClientDeposits.Where(d => d.IsActive).ToListAsync())
             {
-                InterestWithdrawal(deposit, sysDate);
+                await InterestWithdrawal(deposit, sysDate);
             }
         }
 
-        public void InterestWithdrawal(ClientDeposit deposit, DateTime time)
+        public async Task InterestWithdrawal(ClientDeposit deposit, DateTime time)
         {
             bool irrevocableCondition = deposit.Program.Type == DepositType.Revocable &&
                                         deposit.Program.PercentAccessPeriod != null &&
@@ -155,37 +159,37 @@ namespace WebBank.AppCore.Services
             {
                 var percValue = deposit.PercentAccount.Credit - deposit.PercentAccount.Debet;
                 //перевод процентов в кассу
-                MakeTransaction(deposit.PercentAccount, true, CashAccount, true, time, percValue);
+                await MakeTransaction(deposit.PercentAccount, true, CashAccount, true, time, percValue);
                 //вывод процентов из кассы
-                MakeTransaction(CashAccount, false, null, false, time, percValue);
+                await MakeTransaction(CashAccount, false, null, false, time, percValue);
 
                 deposit.LastAccess = time.Date;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
-        public void DailyCompletion(DateTime systemDate)
+        public async Task DailyCompletion(DateTime systemDate)
         {
-            foreach (var deposit in _context.ClientDeposits.Where(d => d.IsActive))
+            foreach (var deposit in await _context.ClientDeposits.Where(d => d.IsActive).ToListAsync())
             {
-                Completion(deposit, systemDate);
+                await Completion(deposit, systemDate);
             }
         }
 
-        public void Completion(ClientDeposit deposit, DateTime time)
+        public async Task Completion(ClientDeposit deposit, DateTime time)
         {
             if (deposit.IsActive && (deposit.Program.Type == DepositType.Revocable || deposit.EndDate.Date.CompareTo(time.Date) <= 0))
             {
-                InterestWithdrawal(deposit, time);
+                await InterestWithdrawal(deposit, time);
                 //окончание депозита
-                MakeTransaction(DevelopmentFund, true, deposit.CurrentAccount, false, time, deposit.InitialAmount);
+                await MakeTransaction(DevelopmentFund, true, deposit.CurrentAccount, false, time, deposit.InitialAmount);
                 //перевод депозита в кассу
-                MakeTransaction(deposit.CurrentAccount, true, CashAccount, true, time, deposit.InitialAmount);
+                await MakeTransaction(deposit.CurrentAccount, true, CashAccount, true, time, deposit.InitialAmount);
                 //выплата денег из кассы
-                MakeTransaction(CashAccount, false, null, false, time, deposit.InitialAmount);
+                await MakeTransaction(CashAccount, false, null, false, time, deposit.InitialAmount);
 
                 deposit.IsActive = false;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
     }

@@ -1,54 +1,70 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using MySqlX.XDevAPI;
 using WebBank.AppCore.Entities;
 using WebBank.AppCore.Interfaces;
 using WebBank.Infrastructure.Data;
 
 namespace WebBank.Pages
 {
-	public class DepositContractModel(MySQLContext context, IDepositService depositService) : PageModel
+	public class DepositContractModel(MySQLContext context, IDepositService depositService, ITimeService timeService) : PageModel
 	{
 		private readonly IDepositService _depositService = depositService;
 		private readonly MySQLContext _context = context;
 
-        [BindProperty(SupportsGet = true)]
-        public Client? CurrentClient { get; set; }
+        public DateOnly SystemDate { get; } = timeService.GetSystemDate();
+
+        [BindProperty]
+        public int ClientId { get; set; }
+        public string ClientName { get; set; } = "";
+
 		[BindProperty]
 		public string ContractName { get; set; } = string.Empty;
-		[BindProperty(SupportsGet = true)]
+
+		[BindProperty]
 		public double StartPayment { get; set; } = 0;
-		[BindProperty(SupportsGet = true)]
-		public DepositProgram? ChoosenProgram { get; set; }
+
+		[BindProperty]
+		public int? ChoosenProgram { get; set; }
 		public List<DepositProgram> DepositPrograms { get; set; } = [];
 
-        public IActionResult OnGet(int clientId)
+        public IActionResult OnGetAsync(int clientId)
 		{
-			CurrentClient = _context.Clients.FirstOrDefault(c => c.Id == clientId);
-			if (CurrentClient == null || !CurrentClient.IsActive)
+            ClientId = clientId;
+			var client = _context.Clients.FirstOrDefault(c => c.Id == clientId);
+			if (client == null || !client.IsActive)
 			{
 				return RedirectToPage("Error");
 			}
+            ClientName = client.Surname + " " + client.Name + " " + client.Patronymic;
 
 			DepositPrograms = [.. _context.DepositPrograms];
 			return Page();
 		}
 
-		public IActionResult OnPost()
-		{
-			if (CurrentClient == null || ChoosenProgram == null)
-			{
-				return RedirectToPage("Error");
-			}
+		public async Task<IActionResult> OnPostAsync()
+        {
+            if (ChoosenProgram == null)
+            {
+                return RedirectToPage("Error");
+            }
 
-			if (ContractName != null && ContractName != string.Empty)
-			{
-				_depositService.Create(CurrentClient, ChoosenProgram, Convert.ToInt32(StartPayment * 100), DateTime.Now, ContractName);
-			}
-			else
-			{
-				_depositService.Create(CurrentClient, ChoosenProgram, Convert.ToInt32(StartPayment * 100), DateTime.Now);
-			}
+            var client = _context.Clients.FirstOrDefault(c => c.Id == ClientId);
+            var program = _context.DepositPrograms.FirstOrDefault(c => c.Id == ChoosenProgram.Value);
+            if (program == null || client == null)
+            {
+                return RedirectToPage("Error");
+            }
+
+            if (ContractName != null && ContractName != string.Empty)
+            {
+                await _depositService.Create(client, program, Convert.ToInt32(StartPayment * 100), DateTime.Now, ContractName);
+            }
+            else
+            {
+                await _depositService.Create(client, program, Convert.ToInt32(StartPayment * 100), DateTime.Now);
+            }
             return RedirectToPage("Index");
-		}
-	}
+        }
+    }
 }

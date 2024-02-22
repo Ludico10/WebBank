@@ -13,11 +13,12 @@ namespace WebBank.Pages
         private readonly IClientService _clientService;
         private readonly MySQLContext _context;
 
-        public EditModel(MySQLContext context, IClientService clientService)
+        public EditModel(MySQLContext context, IClientService clientService, ITimeService timeService)
         {
             _clientService = clientService;
             _context = context;
 
+            SystemDate = timeService.GetSystemDate();
             TownOptions = new SelectList(_context.Towns.AsNoTracking().ToList(), "Id", "Name");
             FamilyStatusOptions = new SelectList(_context.FamilyStatuses.AsNoTracking().ToList(), "Id", "Name");
             DisabilityGroupOptions = new SelectList(_context.DisabilityGroups.AsNoTracking().ToList(), "Id", "Name");
@@ -33,6 +34,7 @@ namespace WebBank.Pages
 
         [BindProperty]
         public List<int>? CitizenshipIds { get; set; }
+        public DateOnly SystemDate { get; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
