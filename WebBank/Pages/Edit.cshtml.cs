@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using WebBank.AppCore.Entities;
 using WebBank.AppCore.Interfaces;
 using WebBank.Infrastructure.Data;
@@ -41,7 +40,7 @@ namespace WebBank.Pages
             if (id == null) return Page();
 
             var client = await _clientService.Find(id.Value);
-            if (client == null) return RedirectToPage("Error");
+            if (client == null) return NotFound();
 
             Client = client;
             CitizenshipIds = Client.Citizenships.Select(cc => cc.Citizenship.Id).ToList();
@@ -52,19 +51,34 @@ namespace WebBank.Pages
         {
             if (Client == null || CitizenshipIds == null) return Page();
 
-            if (!ModelState.IsValid) return RedirectToPage("Error");
+            if (!ModelState.IsValid)
+            {
+                var message = string.Join("<br />", ModelState.Values
+                                        .SelectMany(x => x.Errors)
+                                        .Select(x => x.ErrorMessage));
+                return RedirectToPage("Error", new { message });
+            }
 
             Client.Citizenships.Clear();
             Client.Citizenships.AddRange(CitizenshipIds.Select(id => new ClientCitizenship { CitizenshipId = id }));
-            if (id != null)
+            try
             {
-                await _clientService.Edit(Client);
+                if (id == null)
+                {
+                    await _clientService.Add(Client);
+                }
+                else
+                {
+                    await _clientService.Edit(Client);
+                }
             }
-            else
+            catch (DbUpdateException e)
             {
-                await _clientService.Add(Client);
+                return RedirectToPage("Error", new
+                {
+                    message = $"Failed to {(id == null ? "add" : "edit")} entity<br />" + e.InnerException?.Message
+                });
             }
-
             return RedirectToPage("Index");
         }
     }

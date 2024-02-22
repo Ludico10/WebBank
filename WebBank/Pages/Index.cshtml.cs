@@ -13,7 +13,7 @@ namespace WebBank.Pages
         private readonly MySQLContext _context = context;
         private readonly IClientService _clientService = clientService;
 
-        private const int itemsOnPage = 5;
+        private const int itemsOnPage = 10;
 
         public List<Client> Clients { get; private set; } = [];
         public int PagesCount { get; private set; } = 1;
@@ -33,7 +33,7 @@ namespace WebBank.Pages
 
             if (pageNumber <= 0 || pageNumber > PagesCount)
             {
-                return RedirectToPage("Error");
+                return NotFound();
             }
 
             Clients = await _clientService.GetPage(pageNumber, itemsOnPage);
