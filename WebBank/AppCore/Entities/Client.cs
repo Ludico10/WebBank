@@ -41,7 +41,7 @@ public class Client
     public DateOnly IssueDate { get; set; }
 
     [MaxLength(20)]
-    [RegularExpression(@"^\w{10,}")]
+    [RegularExpression(@"^\w{10,}$")]
     public string IdentificationNumber { get; set; }
 
     [MaxLength(300)]

@@ -70,6 +70,6 @@ th {
     font-size: 24px
 }
 
-.unresizable{
-    resize: none;
+.required-asterisk{
+    color: red;
 }

@@ -4,31 +4,44 @@
 <div class="container">
     <h1 class="text-center">Редактирование пользователя</h1>
     <hr />
-    <form method="post">
+    <form method="post" class="needs-validation" novalidate>
         <input asp-for="Client.Id" type="hidden" />
+        <h2 class="text-center text-uppercase">Фио</h2>
+        <hr />
         <div>
-            <h2 class="text-center text-uppercase">Фио</h2>
             <div>
                 <label asp-for="Client.Surname">Фамилия<span class="required-asterisk">*</span></label>
-                <input asp-for="Client.Surname" />
+                <input pattern="^[А-Я][а-яё]{1,50}$" required class="form-control" placeholder="Иванов..." asp-for="Client.Surname" />
+                <div class="invalid-feedback">
+                    Фамилия обязательна и должна быть на русском языке
+                </div>
             </div>
             <br />
             <div>
                 <label asp-for="Client.Name">Имя<span class="required-asterisk">*</span></label>
-                <input asp-for="Client.Name" />
+                <input pattern="^[А-Я][а-яё]{1,50}$" required class="form-control" placeholder="Иван..." asp-for="Client.Name" />                
+                <div class="invalid-feedback">
+                    Имя обязательно и должно быть на русском языке
+                </div>
             </div>
             <br />
             <div>
                 <label asp-for="Client.Patronymic">Отчество<span class="required-asterisk">*</span></label>
-                <input asp-for="Client.Patronymic" />
+                <input pattern="^[А-Я][а-яё]{1,50}$" required class="form-control" placeholder="Иванович..." asp-for="Client.Patronymic" />
+                <div class="invalid-feedback">
+                    Отчество обязательно и должно быть на русском языке
+                </div>
             </div>
         </div>
+        <h2 class="text-center text-uppercase">Общая информация</h2>
         <hr />
         <div>
-            <h2 class="text-center text-uppercase">Общая информация</h2>
             <div>
                 <label asp-for="Client.Birthday">День рождения<span class="required-asterisk">*</span></label>
-                <input type="date" asp-for="Client.Birthday" />
+                <input type="date" required max=@DateTime.Now.ToString("yyyy-MM-dd") class="form-control" asp-for="Client.Birthday" />
+                <div class="invalid-feedback">
+                    День рождение обязательно и не позднее сегодня
+                </div>
             </div>
             <br />
             <div>
@@ -36,7 +49,7 @@
                 @foreach (var gender in Enum.GetValues(typeof(Gender)).OfType<Gender>())
                 {
                     <label>
-                        <input type="radio" asp-for="Client.Gender" value="@((int)gender)" checked=@(gender == Model.Client.Gender) />
+                        <input type="radio" class="form-check-input" asp-for="Client.Gender" value="@((int)gender)" checked=@(gender == Model.Client.Gender) />
                         @(gender == AppCore.Entities.Gender.Female ? "Женщина" : "Мужчина")
                     </label>
                 }
@@ -44,121 +57,161 @@
             <br />
             <div>
                 <label asp-for="Client.FamilyStatusId">Семейное положение<span class="required-asterisk">*</span></label>
-                <select asp-items="Model.FamilyStatusOptions" asp-for="Client.FamilyStatusId"></select>
+                <select class="form-control" asp-items="Model.FamilyStatusOptions" asp-for="Client.FamilyStatusId"></select>
             </div>
             <br />
             <div>
                 <label asp-for="CitizenshipIds">Гражданство<span class="required-asterisk">*</span>:</label>
-                <select multiple asp-items="Model.CitizenshipOptions" asp-for="CitizenshipIds"></select>
+                <select class="form-control" multiple asp-items="Model.CitizenshipOptions" asp-for="CitizenshipIds"></select>
             </div>
             <br />
             <div>
                 <label asp-for="Client.DisabilityGroupId">Инвалидность<span class="required-asterisk">*</span></label>
-                <select asp-items="Model.DisabilityGroupOptions" asp-for="Client.DisabilityGroupId"></select>
+                <select class="form-control" asp-items="Model.DisabilityGroupOptions" asp-for="Client.DisabilityGroupId"></select>
             </div>
             <br />
             <div>
                 <label>
-                    <input type="checkbox" asp-for="Client.IsPensioner" />
+                    <input type="checkbox" class="form-check-input" asp-for="Client.IsPensioner" />
                     Пенсионер
                 </label>
             </div>
+            <br />
             <div>
                 <label>
-                    <input type="checkbox" asp-for="Client.IsConscript" />
+                    <input type="checkbox" class="form-check-input" asp-for="Client.IsConscript" />
                     Военнообязанный
                 </label>
             </div>
         </div>
+        <h2 class="text-center text-uppercase">Пасспортные данные</h2>
         <hr />
         <div>
-            <h2 class="text-center text-uppercase">Пасспортные данные</h2>
             <div>
                 <label asp-for="Client.PassportSeries">Серия<span class="required-asterisk">*</span></label>
-                <input asp-for="Client.PassportSeries" />
+                <input required pattern="^[A-Z]+$" class="form-control" placeholder="A..." asp-for="Client.PassportSeries" />
+                <div class="invalid-feedback">
+                    Серия паспорта состоит из 1-2 букв латинского алфавита
+                </div>
+            </div>
+            <br />
+            <div>
                 <label asp-for="Client.PassportNumber">Номер<span class="required-asterisk">*</span></label>
-                <input asp-for="Client.PassportNumber" type="number" />
+                <input required pattern="^\d{7,9}$" class="form-control" placeholder="1234567..." asp-for="Client.PassportNumber" />
+                <div class="invalid-feedback">
+                    Номер паспорта состоит из 7-9 цифр
+                </div>
             </div>
             <br />
             <div>
                 <label asp-for="Client.IdentificationNumber">Идентификационный номер<span class="required-asterisk">*</span></label>
-                <input asp-for="Client.IdentificationNumber" />
+                <input required pattern="^\w{10,20}$" class="form-control" placeholder="1234567890..." asp-for="Client.IdentificationNumber" />
+                <div class="invalid-feedback">
+                    Идентификационный номер паспорта состоит из 10-20 цифр/букв
+                </div>
             </div>
             <br />
             <div>
-                <label asp-for="Client.IssuePlace">Место выдачи</label><label>*</label>
-                <textarea asp-for="Client.IssuePlace" cols="80" rows="2" class="unresizable"></textarea>
+                <label asp-for="Client.IssuePlace">Место выдачи</label><labe class="required-asterisk">*</labe>
+                <textarea required class="form-control" placeholder="РОВД Бреста..." asp-for="Client.IssuePlace"></textarea>
+                <div class="invalid-feedback">
+                    Обязательное поле
+                </div>
             </div>
             <br />
             <div>
                 <label asp-for="Client.IssueDate">Дата выдачи<span class="required-asterisk">*</span></label>
-                <input type="date" asp-for="Client.IssueDate" />
+                <input type="date" required max=@DateTime.Now.ToString("yyyy-MM-dd") class="form-control" asp-for="Client.IssueDate" />
+                <div class="invalid-feedback">
+                    Дата выдачи обязательна и не позже сегодня
+                </div>
             </div>
         </div>
+        <h2 class="text-center text-uppercase">Контактная информация</h2>
         <hr />
         <div>
-            <h2 class="text-center text-uppercase">Контактная информация</h2>
             <div>
                 <label asp-for="Client.BirthPlace">Место рождения<span class="required-asterisk">*</span></label>
-                <textarea asp-for="Client.BirthPlace" cols="80" rows="2" class="unresizable"></textarea>
+                <textarea class="form-control" required placeholder="Республика Беларусь..." asp-for="Client.BirthPlace"></textarea>
+                <div class="invalid-feedback">
+                    Обязательное поле
+                </div>
             </div>
             <br />
             <div>
                 <label asp-for="Client.RegistrationTownId">Город прописки<span class="required-asterisk">*</span></label>
-                <select asp-for="Client.RegistrationTownId" asp-items="Model.TownOptions"></select>
+                <select class="form-control" asp-for="Client.RegistrationTownId" asp-items="Model.TownOptions"></select>
             </div>
             <br />
             <div>
                 <label asp-for="Client.RegistrationAddress">Адрес прописки<span class="required-asterisk">*</span></label>
-                <textarea asp-for="Client.RegistrationAddress" cols="80" rows="2" class="unresizable"></textarea>
+                <textarea required class="form-control" placeholder="Московская 1..." asp-for="Client.RegistrationAddress"></textarea>
+                <div class="invalid-feedback">
+                    Обязательное поле
+                </div>
             </div>
             <br />
             <div>
                 <label asp-for="Client.TownId">Город проживания<span class="required-asterisk">*</span></label>
-                <select asp-for="Client.TownId" asp-items="Model.TownOptions" cols="80" rows="2" class="unresizable"></select>
+                <select class="form-control" asp-for="Client.TownId" asp-items="Model.TownOptions"></select>
             </div>
             <br />
             <div>
                 <label asp-for="Client.Address">Адрес проживания<span class="required-asterisk">*</span></label>
-                <textarea asp-for="Client.Address" cols="80" rows="2" class="unresizable"></textarea>
+                <textarea required class="form-control" placeholder="Московская 2..." asp-for="Client.Address"></textarea>
+                <div class="invalid-feedback">
+                    Обязательное поле
+                </div>
             </div>
             <br />
             <div>
                 <label asp-for="Client.MobilePhone">Мобильный телефон</label>
-                <input asp-for="Client.MobilePhone" />
+                <input type="tel" pattern="^(\+375|80)\d{9}$" placeholder="+375XXXXXXXXX..." class="form-control" asp-for="Client.MobilePhone" />
+                <div class="invalid-feedback">
+                    Мобильный телефон имеет формат +375XXXXXXXXX или 80XXXXXXXXX
+                </div>
             </div>
             <br />
             <div>
                 <label asp-for="Client.HomePhone">Домашний телефон</label>
-                <input asp-for="Client.HomePhone" />
+                <input type="tel" pattern="^\d{7}$" class="form-control" placeholder="1234567..." asp-for="Client.HomePhone" />
+                <div class="invalid-feedback">
+                    Домашний телефон состоит из 7 цифр
+                </div>
             </div>
             <br />
             <div>
                 <label asp-for="Client.Email">Адрес электронной почты</label>
-                <input asp-for="Client.Email" />
+                <input type="email" class="form-control" placeholder="example@gmail.com..." asp-for="Client.Email" />
+                <div class="invalid-feedback">
+                    Почта должна иметь корректный формат
+                </div>
             </div>
         </div>
+        <h2 class="text-center text-uppercase">Работа</h2>
         <hr />
         <div>
-            <h2 class="text-center text-uppercase">Работа</h2>
             <div>
                 <label asp-for="Client.WorkPlace">Место работы</label>
-                <textarea asp-for="Client.WorkPlace" cols="80" rows="2" class="unresizable"></textarea>
+                <textarea class="form-control" asp-for="Client.WorkPlace"></textarea>
             </div>
             <br />
             <div>
                 <label asp-for="Client.WorkPosition">Должность</label>
-                <input asp-for="Client.WorkPosition" />
+                <input class="form-control" asp-for="Client.WorkPosition" />
             </div>
             <br />
             <div>
                 <label asp-for="Client.MonthlyIncome">Доход, <span class="text-nowrap">BYN/месяц</span></label>
-                <input asp-for="Client.MonthlyIncome" type="number" />
+                <input min="1" class="form-control" asp-for="Client.MonthlyIncome" type="number" />
+                <div class="invalid-feedback">
+                    Доход - натуральное число
+                </div>
             </div>
         </div>
-        <hr />
+        <br />
         <div class="text-center">
-            <input type="submit" value="Сохранить" />
+            <input type="submit" value="Сохранить" class="btn btn-primary" />
         </div>
     </form>
 </div>
