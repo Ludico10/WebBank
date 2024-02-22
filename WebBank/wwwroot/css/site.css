@@ -31,7 +31,7 @@ div {
     margin: 0;
 }
 
-th, td:not(:last-child) {
+th:not(:first-child), td:not(:first-child) {
     border: 2px solid black;
     border-collapse: collapse;
     padding: 3px;
