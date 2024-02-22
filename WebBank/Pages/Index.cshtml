@@ -5,7 +5,7 @@
 
 <div class="text-center">
     <h2>Список пользователей</h2>
-    <table border="1">
+    <table border="1" style="margin: 0 auto;">
         <thead>
             <tr>
                 <th>ID</th>
@@ -38,6 +38,18 @@
                 @foreach (var client in Model.Clients)
                 {
                     <tr>
+                        <td>
+                            <div class="parent">
+                                <form method="post">
+                                    <a class="child" asp-page="Edit" asp-route-id="@client.Id">
+                                        <img src="~/images/edit.png" alt="Изменить" class="icon" />
+                                    </a>
+                                    <button class="child no-border" type="submit" asp-page-handler="delete" asp-route-id="@client.Id">
+                                        <img src="~/images/recycle-bin.png" alt="Удалить" class="icon" />
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
                         <td>@client.Id</td>
                         <td>@($"{client.Surname} {client.Name} {client.Patronymic}")</td>
                         <td>@client.Birthday.ToString("dd.MM.yyyy")</td>
@@ -60,19 +72,6 @@
                         <td>@(client.WorkPlace ?? "-")</td>
                         <td>@(client.WorkPosition ?? "-")</td>
                         <td>@(client.MonthlyIncome == null ? "-" : client.MonthlyIncome)</td>
-                        <td>
-                            <div class="parent">
-                                <form method="post">
-                                    <a class="child" asp-page="Edit" asp-route-id="@client.Id">
-                                        <img src="~/images/edit.png" alt="Изменить" class="icon" />
-                                    </a>
-                                    <button class="child no-border" type="submit" asp-page-handler="delete" asp-route-id="@client.Id">
-                                        <img src="~/images/recycle-bin.png" alt="Удалить" class="icon" />
-                                    </button>
-                                </form>
-                            </div>
-
-                        </td>
                     </tr>
                 }
             }
