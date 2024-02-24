@@ -141,6 +141,7 @@
                 <th>ID</th>
                 <th>Время</th>
                 <th>Сумма</th>
+                <th>Валюта</th>
                 <th>Номер счета отправителя</th>
                 <th>Часть счета отправителя</th>
                 <th>Номер счета получателя</th>
@@ -156,6 +157,7 @@
                         <td>@transaction.Id</td>
                         <td>@transaction.Time</td>
                         <td>@transaction.Amount</td>
+                        <td>@transaction.Currency.Notation</td>
                         @if (transaction.FromAccount != null)
                         {
                             <td>@transaction.FromAccount.Number</td>

@@ -10,16 +10,17 @@
             <tr>
                 <th>Название программы</th>
                 <th>Процентная ставка</th>
+                <th>Валюта</th>
                 <th>Дата начала</th>
                 <th>Дата окончания</th>
                 <th>Тип депозита</th>
                 <th>Дата следующего снятия процентов</th>
                 <th>Номер текущего счета</th>
                 <th>Название текущего счета</th>
-                <th>Сальдо текущего счета</th>
+                <th>Остаток текущего счета</th>
                 <th>Номер процентного счета</th>
                 <th>Название процентного счета</th>
-                <th>Сальдо процентного счета</th>
+                <th>Остаток процентного счета</th>
             </tr>
         </thead>
         <tbody>
@@ -30,6 +31,7 @@
                     <tr>
                         <td>@deposit.Program.Name</td>
                         <td>@deposit.Program.Percent</td>
+                        <td>@deposit.Program.Currency.Notation</td>
                         <td>@deposit.StartDate</td>
                         <td>@deposit.EndDate</td>
                         <td>@(deposit.Program.Type == DepositType.Revocable ? "отзывный" : "безотзывный")</td>

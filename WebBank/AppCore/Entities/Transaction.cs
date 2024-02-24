@@ -3,6 +3,7 @@
     public class Transaction
     {
         public int Id { get; set; }
+        public virtual required Currency Currency { get; set; }
         public required virtual BankAccount? FromAccount { get; set; }
         public bool FromDebet { get; set; } = false;
         public required virtual BankAccount? ToAccount { get; set; }
