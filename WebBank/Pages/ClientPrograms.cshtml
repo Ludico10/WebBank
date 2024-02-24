@@ -45,6 +45,18 @@
                         <td>@deposit.PercentAccount.Number</td>
                         <td>@deposit.PercentAccount.Name</td>
                         <td>@(deposit.PercentAccount.Credit - deposit.PercentAccount.Debet)</td>
+                        <td>
+                            @if (deposit.Program.Type == DepositType.Revocable)
+                            {
+                                <div class="parent">
+                                    <form method="post">
+                                        <button class="child no-border" type="submit" asp-page-handler="delete" asp-route-id="@deposit.Id">
+                                            <img src="~/images/recycle-bin.png" alt="Отозвать" class="icon" />
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                        </td>
                     </tr>
                 }
             }

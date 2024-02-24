@@ -11,6 +11,7 @@ namespace WebBank.Pages
     {
         private readonly MySQLContext _context = context;
         private readonly IDepositService _depositService = depositService;
+
         private const int itemsOnPage = 10;
 
         public DateOnly SystemDate { get; } = timeService.GetSystemDate();
@@ -40,6 +41,19 @@ namespace WebBank.Pages
             ClientName = client.Surname + " " + client.Name + " " + client.Patronymic;
 
             Deposits = await _depositService.GetClientPage(id, depositPage, itemsOnPage);
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostDeleteAsync(int id)
+        {
+            var deposit = _context.ClientDeposits.FirstOrDefault(cd => cd.Id == id);
+            if (deposit == null)
+            {
+                return BadRequest();
+            }
+
+            var sysTime = new DateTime(SystemDate.Year, SystemDate.Month, SystemDate.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+            await _depositService.Completion(deposit, sysTime);
             return Page();
         }
     }
