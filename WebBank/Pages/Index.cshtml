@@ -42,6 +42,9 @@
                         <td>
                             <div class="parent">
                                 <form method="post">
+                                    <a class="child" asp-page="ClientPrograms" asp-route-id="@client.Id">
+                                        <img src="~/images/list.png" alt="Просмотреть" class="icon" />
+                                    </a>
                                     <a class="child" asp-page="Edit" asp-route-id="@client.Id">
                                         <img src="~/images/edit.png" alt="Изменить" class="icon" />
                                     </a>

@@ -1,0 +1,112 @@
+﻿@page "{id:int}"
+@using WebBank.AppCore.Entities
+@model WebBank.Pages.ClientProgramsModel
+<div class="text-center">
+    <h1 class="text-center">Программы пользователя @Model.ClientName</h1>
+    <hr />
+    <h3 class="text-center">Депозитные программы</h3>
+    <table border="1" style="margin: 0 auto;">
+        <thead>
+            <tr>
+                <th>Название программы</th>
+                <th>Процентная ставка</th>
+                <th>Дата начала</th>
+                <th>Дата окончания</th>
+                <th>Тип депозита</th>
+                <th>Дата следующего снятия процентов</th>
+                <th>Номер текущего счета</th>
+                <th>Название текущего счета</th>
+                <th>Сальдо текущего счета</th>
+                <th>Номер процентного счета</th>
+                <th>Название процентного счета</th>
+                <th>Сальдо процентного счета</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Deposits.Any())
+            {
+                @foreach (var deposit in Model.Deposits)
+                {
+                    <tr>
+                        <td>@deposit.Program.Name</td>
+                        <td>@deposit.Program.Percent</td>
+                        <td>@deposit.StartDate</td>
+                        <td>@deposit.EndDate</td>
+                        <td>@(deposit.Program.Type == DepositType.Revocable ? "отзывный" : "безотзывный")</td>
+                        <td>@((deposit.Program.Type == DepositType.Revocable && deposit.Program.PercentAccessPeriod != null) 
+                                ? deposit.LastAccess.AddDays(deposit.Program.PercentAccessPeriod.Value) 
+                                : deposit.EndDate)
+                        </td>
+                        <td>@deposit.CurrentAccount.Number</td>
+                        <td>@deposit.CurrentAccount.Name</td>
+                        <td>@(deposit.CurrentAccount.Credit - deposit.CurrentAccount.Debet)</td>
+                        <td>@deposit.PercentAccount.Number</td>
+                        <td>@deposit.PercentAccount.Name</td>
+                        <td>@(deposit.PercentAccount.Credit - deposit.PercentAccount.Debet)</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="21"><h3>Нет депозитов</h3></td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+    <hr />
+    <div class="pagination-container">
+        Страницы:
+        <a href="/Index/1" class=@(Model.DepositPage == 1 ? "disabled" : "")>1</a>
+        @if (Model.DepositPagesCount > 7)
+        {
+            if (Model.DepositPage > 4)
+            {
+                <label>...</label>
+                if (Model.DepositPage < Model.DepositPagesCount - 3)
+                {
+                    for (int i = -1; i <= 1; i++)
+                    {
+                        <a href="/Index/@(i + Model.DepositPage)" class=@(Model.DepositPage == i + Model.DepositPage ? "disabled" : "")>@(i + Model.DepositPage)</a>
+                    }
+                    <label>...</label>
+                }
+                else
+                {
+                    for (int i = Model.DepositPagesCount - 4; i < Model.DepositPagesCount; i++)
+                    {
+                        <a href="/Index/@i" class=@(Model.DepositPage == i ? "disabled" : "")>@i</a>
+                    }
+                }
+            }
+            else
+            {
+                <a href="/Index/2" class=@(Model.DepositPage == 2 ? "disabled" : "")>2</a>
+                for (int i = 3; i <= 5; i++)
+                {
+                    <a href="/Index/@i" class=@(Model.DepositPage == i ? "disabled" : "")>@i</a>
+                }
+                <label>...</label>
+            }
+            <a href="/Index/@Model.DepositPagesCount" class=@(Model.DepositPage == Model.DepositPagesCount ? "disabled" : "")>@Model.DepositPagesCount</a>
+        }
+        else
+        {
+            for (int i = 2; i <= Model.DepositPagesCount; i++)
+            {
+                <a href="/ClientProgram/@Model.ClientId?depositPage=@i" class=@(Model.DepositPage == i ? "disabled" : "")>@i</a>
+            }
+        }
+    </div>
+    <hr />
+    <div>
+        <a href="/DepositContract?clientId=@Model.ClientId" class="btn btn-outline-dark" role="button"> Добавить</a>
+    </div>
+    <hr />
+    <h3 class="text-center">Кредитные программы</h3>
+</div>
+
+@section Footer {
+    @Model.SystemDate
+}

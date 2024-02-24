@@ -8,6 +8,8 @@ namespace WebBank.AppCore.Interfaces
         public BankAccount CashAccount { get; }
 
         public void SetStartingFund(int amount);
+        public Task<int> ClientDepositsCount(int clientId);
+        public Task<List<ClientDeposit>> GetClientPage(int clientId, int pageNumber, int itemsOnPage);
         public Task Create(Client client, DepositProgram depositProgram, int ammount, DateTime date, string name = "Безымянный");
         public Task Process(DateTime systemDate);
         public Task DailyInterestWithdrawal(DateTime sysDate);

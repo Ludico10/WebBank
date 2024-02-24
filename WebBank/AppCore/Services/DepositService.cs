@@ -31,6 +31,25 @@ namespace WebBank.AppCore.Services
             DevelopmentFund.Credit = amount;
         }
 
+        public async Task<int> ClientDepositsCount(int clientId)
+        {
+            return await _context.ClientDeposits
+                    .Where(cd => cd.Id == clientId && cd.IsActive)
+                    .CountAsync();
+        }
+
+        public async Task<List<ClientDeposit>> GetClientPage(int clientId, int pageNumber, int itemsOnPage)
+        {
+            var page = await _context.ClientDeposits
+                        .OrderBy(cd => cd.StartDate)
+                        .Where(cd => cd.IsActive && cd.Id == clientId)
+                        .Skip(itemsOnPage * (pageNumber - 1))
+                        .Take(itemsOnPage)
+                        .ToListAsync();
+
+            return page;
+        }
+
         private async Task MakeTransaction(BankAccount? fromAccount, bool fromDebet, BankAccount? toAccount, bool toDebet, DateTime time, int ammount)
         {
             Transaction transaction = new()

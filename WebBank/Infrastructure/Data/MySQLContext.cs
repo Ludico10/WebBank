@@ -5,7 +5,7 @@ namespace WebBank.Infrastructure.Data;
 
 public class MySQLContext : DbContext
 {
-    public readonly string dbPath = "server=localhost;database=bank_db;user=root;password=Phabletik1044";
+    public readonly string dbPath = "server=localhost;database=bank_db;user=root;password=";
 
     public MySQLContext()
     {
@@ -60,7 +60,8 @@ public class MySQLContext : DbContext
             .Entity<SystemInformation>()
             .HasData(
             [
-                new() { Id = 1, Name = "TimeDifference", Value = "0" }
+                new() { Id = 1, Name = "TimeDifference", Value = "0" },
+                new() { Id = 2, Name = "LastVisitTime", Value = DateTime.Now.ToString() }
             ]);
 
         modelBuilder
