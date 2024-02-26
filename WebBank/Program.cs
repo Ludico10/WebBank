@@ -10,6 +10,7 @@ builder.Services.AddDbContext<MySQLContext>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IDepositService, DepositService>();
 builder.Services.AddScoped<ITimeService, TimeImitationService>();
+builder.Services.AddScoped<ICreditService, CreditService>();
 
 var app = builder.Build();
 

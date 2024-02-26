@@ -25,6 +25,9 @@ public class MySQLContext : DbContext
     public DbSet<BankAccount> BankAccounts => Set<BankAccount>();
     public DbSet<ClientDeposit> ClientDeposits => Set<ClientDeposit>();
     public DbSet<Transaction> Transactions => Set<Transaction>();
+    public DbSet<CreditProgram> CreditPrograms => Set<CreditProgram>();
+    public DbSet<ClientCredit> ClientCredits => Set<ClientCredit>();
+    public DbSet<CreditSchedule> Schedules => Set<CreditSchedule>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder
