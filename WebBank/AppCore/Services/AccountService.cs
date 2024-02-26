@@ -63,42 +63,43 @@ namespace WebBank.AppCore.Services
             return result + CalculateChecksum(result).ToString();
         }
 
-        protected async Task MakeTransaction(BankAccount? fromAccount, bool fromDebet, BankAccount? toAccount, bool toDebet, DateTime time, int ammount)
+        protected async Task MakeTransaction(BankAccount? fromAccount, bool fromDebet, BankAccount? toAccount, bool toDebet, DateTime time, decimal ammount)
         {
-            if (fromAccount != null || toAccount != null)
+            if (fromAccount == null && toAccount == null)
             {
-                if (fromAccount != null && toAccount != null && fromAccount.Currency.Id != toAccount.Currency.Id)
-                {
-                    throw new Exception("Transattion in different currencies");
-                }
-
-                Transaction transaction = new()
-                {
-                    Currency = fromAccount != null ? fromAccount.Currency : toAccount!.Currency,
-                    FromAccount = fromAccount,
-                    FromDebet = fromDebet,
-                    ToAccount = toAccount,
-                    ToDebet = toDebet,
-                    Time = time,
-                    Amount = ammount
-                };
-                if (fromAccount != null)
-                {
-                    if (fromDebet)
-                        fromAccount.Debet += ammount;
-                    else
-                        fromAccount.Credit += ammount;
-                }
-                if (toAccount != null)
-                {
-                    if (toDebet)
-                        toAccount.Debet += ammount;
-                    else
-                        toAccount.Credit += ammount;
-                }
-                _context.Transactions.Add(transaction);
-                await _context.SaveChangesAsync();
+                return;
             }
+            if (fromAccount != null && toAccount != null && fromAccount!.Currency.Id != toAccount!.Currency!.Id)
+            {
+                throw new Exception("Transattion in different currencies");
+            }
+
+            Transaction transaction = new()
+            {
+                Currency = fromAccount != null ? fromAccount.Currency : toAccount!.Currency,
+                FromAccount = fromAccount,
+                FromDebet = fromDebet,
+                ToAccount = toAccount,
+                ToDebet = toDebet,
+                Time = time,
+                Amount = ammount
+            };
+            if (fromAccount != null)
+            {
+                if (fromDebet)
+                    fromAccount.Debet += ammount;
+                else
+                    fromAccount.Credit += ammount;
+            }
+            if (toAccount != null)
+            {
+                if (toDebet)
+                    toAccount.Debet += ammount;
+                else
+                    toAccount.Credit += ammount;
+            }
+            _context.Transactions.Add(transaction);
+            await _context.SaveChangesAsync();
         }
     }
 }

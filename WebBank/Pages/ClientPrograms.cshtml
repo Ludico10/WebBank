@@ -21,6 +21,7 @@
                 <th>Номер процентного счета</th>
                 <th>Название процентного счета</th>
                 <th>Остаток процентного счета</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -34,8 +35,8 @@
                         <td>@deposit.Program.Currency.Notation</td>
                         <td>@deposit.StartDate</td>
                         <td>@deposit.EndDate</td>
-                        <td>@(deposit.Program.Type == DepositType.Revocable ? "отзывный" : "безотзывный")</td>
-                        <td>@((deposit.Program.Type == DepositType.Revocable && deposit.Program.PercentAccessPeriod != null) 
+                        <td>@(deposit.Program.IsRevocable ? "отзывный" : "безотзывный")</td>
+                        <td>@((deposit.Program.IsRevocable && deposit.Program.PercentAccessPeriod != null) 
                                 ? deposit.LastAccess.AddDays(deposit.Program.PercentAccessPeriod.Value) 
                                 : deposit.EndDate)
                         </td>
@@ -46,7 +47,7 @@
                         <td>@deposit.PercentAccount.Name</td>
                         <td>@(deposit.PercentAccount.Credit - deposit.PercentAccount.Debet)</td>
                         <td>
-                            @if (deposit.Program.Type == DepositType.Revocable)
+                            @if (deposit.Program.IsRevocable)
                             {
                                 <div class="parent">
                                     <form method="post">

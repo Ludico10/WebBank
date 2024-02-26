@@ -17,7 +17,7 @@
                         <th>Период снятия процентов,<span class="text-nowrap">дней</span></th>
                         <th>Ставка,<span class="text-nowrap">% годовых</span></th>
                         <th>Валюта</th>
-                        <th>Минималный взнос</th>
+                        <th>Минимальный взнос</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -28,7 +28,7 @@
                             <tr>
                                 <td><input type="radio" asp-for="ChoosenProgram" value="@program.Id" /></td>
                                 <td>@program.Name</td>
-                                <td>@(program.Type == AppCore.Entities.DepositType.Revocable ? "Отзывный" : "Безотзывный")</td>
+                                <td>@(program.IsRevocable ? "Отзывный" : "Безотзывный")</td>
                                 <td>@program.Period</td>
                                 <td>@(program.PercentAccessPeriod != null ? program.PercentAccessPeriod : "-")</td>
                                 <td>@program.Percent</td>

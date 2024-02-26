@@ -21,7 +21,7 @@ namespace WebBank.Pages
         public string ContractName { get; set; } = string.Empty;
 
         [BindProperty]
-        public double StartPayment { get; set; } = 0;
+        public decimal StartPayment { get; set; } = 0;
 
         [BindProperty]
         public int? ChoosenProgram { get; set; }
@@ -57,11 +57,11 @@ namespace WebBank.Pages
 
             if (ContractName != null && ContractName != string.Empty)
             {
-                await _depositService.Create(client, program, Convert.ToInt32(StartPayment * 100), DateTime.Now, ContractName);
+                await _depositService.Create(client, program, StartPayment, DateTime.Now, ContractName);
             }
             else
             {
-                await _depositService.Create(client, program, Convert.ToInt32(StartPayment * 100), DateTime.Now);
+                await _depositService.Create(client, program, StartPayment, DateTime.Now);
             }
             return RedirectToPage("ClientPrograms", new { id = ClientId });
         }
