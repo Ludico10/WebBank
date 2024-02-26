@@ -31,10 +31,14 @@ div {
     margin: 0;
 }
 
-th:not(:first-child), td:not(:first-child) {
+th, td {
     border: 2px solid black;
     border-collapse: collapse;
     padding: 3px;
+}
+
+table{
+    margin: 0 auto;
 }
 
 th {

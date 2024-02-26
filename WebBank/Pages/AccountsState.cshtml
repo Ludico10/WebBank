@@ -193,8 +193,10 @@
 
 @section Footer {
     @Model.SystemDate
-    <form method="post">
-        <input type="submit" value="+" />
-        <input type="number" name="dateDif" />
+    <br />
+    <form method="post" class="parent" style="width: 5rem">
+        <label for="dateDif" class="child">Число дней для пропуска</label>
+        <input id="dateDif" class="form-control child" type="number" name="dateDif" required min="1" />
+        <input type="submit" value="Отправить" class="btn btn-primary child" />
     </form>
 }
