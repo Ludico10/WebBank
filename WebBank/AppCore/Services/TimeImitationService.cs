@@ -27,18 +27,20 @@ namespace WebBank.AppCore.Services
 
         ~TimeImitationService()
         {
-            var lastVisitInfo = _context.SystemInformation.FirstOrDefault(si => si.Name == "LastVisitTime");
-            if (lastVisitInfo != null)
+            try
             {
-                lastVisitInfo.Value = sysTime.ToString();
+                var lastVisitInfo = _context.SystemInformation.FirstOrDefault(si => si.Name == "LastVisitTime");
+                if (lastVisitInfo != null)
+                    lastVisitInfo.Value = sysTime.ToString();
+                _context.SaveChanges();
             }
-            _context.SaveChanges();
+            catch
+            {
+                // Ignore
+            }
         }
 
-        public DateOnly GetSystemDate()
-        {
-            return new DateOnly(sysTime.Year, sysTime.Month, sysTime.Day);
-        }
+        public DateOnly GetSystemDate() => new DateOnly(sysTime.Year, sysTime.Month, sysTime.Day);
 
         public async Task SkipDays(int count)
         {
