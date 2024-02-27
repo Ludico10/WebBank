@@ -32,7 +32,8 @@ public class MySQLContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder
             .UseMySQL(dbPath)
-            .UseLazyLoadingProxies();
+            .UseLazyLoadingProxies()
+            .UseSnakeCaseNamingConvention();
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
@@ -45,6 +46,9 @@ public class MySQLContext : DbContext
             .Properties<Gender>()
             .HaveConversion<Converters.GenderConverter>()
             .HaveColumnType($"ENUM('{nameof(Gender.Male)}', '{nameof(Gender.Female)}')");
+
+        configurationBuilder.Properties<decimal>()
+            .HavePrecision(18, 4);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -53,12 +57,13 @@ public class MySQLContext : DbContext
             .Entity<Client>()
             .HasIndex(c => c.IdentificationNumber)
             .IsUnique();
+
         modelBuilder
             .Entity<Client>()
             .HasIndex(c => new { c.PassportSeries, c.PassportNumber })
             .IsUnique();
 
-#if DEBUG
+        // Необходимые для работы данные
         modelBuilder
             .Entity<SystemInformation>()
             .HasData(
@@ -67,6 +72,31 @@ public class MySQLContext : DbContext
                 new() { Id = 2, Name = "LastVisitTime", Value = DateTime.Now.ToString() }
             ]);
 
+        modelBuilder
+            .Entity<BankAccount>()
+            .HasData(
+            [
+                new()
+                {
+                    Id = 1,
+                    Name = "Касса",
+                    Number = "0000000000009",
+                    CurrencyId = 1,
+                    Type = AccountType.Cash,
+                },
+                new()
+                {
+                    Id = 2,
+                    Name = "Фонд развития",
+                    Number = "0001000000009",
+                    CurrencyId = 1,
+                    Type = AccountType.Fund,
+                    Credit = 1000000000
+                }
+            ]);
+
+        // Данные, для которых нет интерфейса добавления/редактирования, но необходимые для
+        // добавления/редактирования других данных
         modelBuilder
             .Entity<Town>()
             .HasData(
@@ -80,6 +110,14 @@ public class MySQLContext : DbContext
         ]);
 
         modelBuilder
+            .Entity<FamilyStatus>()
+            .HasData(
+        [
+            new() { Id = 1, Name = "Не женат/замужем" },
+            new() { Id = 2, Name = "Состоит в браке" }
+        ]);
+
+        modelBuilder
             .Entity<DisabilityGroup>()
             .HasData(
         [
@@ -90,14 +128,6 @@ public class MySQLContext : DbContext
         ]);
 
         modelBuilder
-            .Entity<FamilyStatus>()
-            .HasData(
-        [
-            new() { Id = 1, Name = "Не женат/замужем" },
-            new() { Id = 2, Name = "Состоит в браке" }
-        ]);
-
-        modelBuilder
             .Entity<Citizenship>()
             .HasData(
         [
@@ -105,6 +135,44 @@ public class MySQLContext : DbContext
             new() { Id = 2, Name = "Российская Федерация" }
         ]);
 
+
+        modelBuilder
+            .Entity<Currency>()
+            .HasData(
+        [
+            new() { Id = 1, Name = "белорусский рубль", Notation = "BYN" },
+            new() { Id = 2, Name = "доллар", Notation = "$" }
+        ]);
+
+        modelBuilder
+            .Entity<DepositProgram>()
+            .HasData(
+        [
+            new()
+            {
+                Id = 1,
+                Name = "1",
+                CurrencyId = 1,
+                IsRevocable = true,
+                MinimumPayment = 1000,
+                Percent = 30,
+                Period = 365,
+                PercentAccessPeriod = 35
+            },
+            new()
+            {
+                Id = 2,
+                Name = "2",
+                CurrencyId = 1,
+                IsRevocable = false,
+                MinimumPayment = 100,
+                Percent = 50,
+                Period = 35
+            }
+        ]);
+
+#if DEBUG
+        // Данные, которые возможно добавить/отредактировать в приложении
         modelBuilder
             .Entity<Client>()
             .HasData(
@@ -331,75 +399,17 @@ public class MySQLContext : DbContext
             .Entity<ClientCitizenship>()
             .HasData(
                 [
-                    new () { ClientId = 1, CitizenshipId = 1 },
-                    new () { ClientId = 2, CitizenshipId = 1 },
-                    new () { ClientId = 2, CitizenshipId = 2 },
-                    new () { ClientId = 3, CitizenshipId = 1 },
-                    new () { ClientId = 4, CitizenshipId = 1 },
-                    new () { ClientId = 5, CitizenshipId = 1 },
-                    new () { ClientId = 6, CitizenshipId = 1 },
-                    new () { ClientId = 7, CitizenshipId = 1 },
-                    new () { ClientId = 8, CitizenshipId = 1 },
-                    new () { ClientId = 9, CitizenshipId = 1 }
+                    new() { ClientId = 1, CitizenshipId = 1 },
+                    new() { ClientId = 2, CitizenshipId = 1 },
+                    new() { ClientId = 2, CitizenshipId = 2 },
+                    new() { ClientId = 3, CitizenshipId = 1 },
+                    new() { ClientId = 4, CitizenshipId = 1 },
+                    new() { ClientId = 5, CitizenshipId = 1 },
+                    new() { ClientId = 6, CitizenshipId = 1 },
+                    new() { ClientId = 7, CitizenshipId = 1 },
+                    new() { ClientId = 8, CitizenshipId = 1 },
+                    new() { ClientId = 9, CitizenshipId = 1 }
                 ]);
-
-        modelBuilder
-            .Entity<Currency>()
-            .HasData(
-            [
-                new() { Id = 1, Name = "белорусский рубль", Notation = "BYN" },
-                new() { Id = 2, Name = "доллар", Notation = "$" }
-            ]);
-
-        modelBuilder
-            .Entity<DepositProgram>()
-            .HasData(
-            [
-                new()
-                {
-                    Id = 1,
-                    Name = "1",
-                    CurrencyId = 1,
-                    IsRevocable = true,
-                    MinimumPayment = 1000,
-                    Percent = 30,
-                    Period = 365,
-                    PercentAccessPeriod = 35
-                },
-                new()
-                {
-                    Id = 2,
-                    Name = "2",
-                    CurrencyId = 1,
-                    IsRevocable = false,
-                    MinimumPayment = 100,
-                    Percent = 50,
-                    Period = 35
-                }
-            ]);
-
-        modelBuilder
-            .Entity<BankAccount>()
-            .HasData(
-            [
-                new()
-                {
-                    Id = 1,
-                    Name = "Касса",
-                    Number = "0000000000009",
-                    CurrencyId = 1,
-                    Type = AccountType.Cash,
-                },
-                new()
-                {
-                    Id = 2,
-                    Name = "Фонд развития",
-                    Number = "0001000000009",
-                    CurrencyId = 1,
-                    Type = AccountType.Fund,
-                    Credit = 1000000000
-                }
-            ]);
 #endif
     }
 }
