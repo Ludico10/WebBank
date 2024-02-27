@@ -5,7 +5,7 @@ namespace WebBank.Infrastructure.Data;
 
 public class MySQLContext : DbContext
 {
-    public readonly string dbPath = "server=localhost;database=bank_db;user=root;password=Phabletik1044";
+    public readonly string dbPath = "server=localhost;database=bank_db;user=root;password=admin";
 
     public MySQLContext()
     {
@@ -360,7 +360,7 @@ public class MySQLContext : DbContext
                     Id = 1,
                     Name = "1",
                     CurrencyId = 1,
-                    Type = DepositType.Revocable,
+                    IsRevocable = true,
                     MinimumPayment = 1000,
                     Percent = 30,
                     Period = 365,
@@ -371,7 +371,7 @@ public class MySQLContext : DbContext
                     Id = 2,
                     Name = "2",
                     CurrencyId = 1,
-                    Type = DepositType.Irrevocable,
+                    IsRevocable = false,
                     MinimumPayment = 100,
                     Percent = 50,
                     Period = 35

@@ -1,10 +1,9 @@
-﻿namespace WebBank.AppCore.Entities
+﻿namespace WebBank.AppCore.Entities;
+
+public enum AccountType
 {
-    public enum AccountType
-    {
-        Fund,
-        Cash,
-        Current,
-        Percent
-    }
+    Fund,
+    Cash,
+    Current,
+    Percent
 }

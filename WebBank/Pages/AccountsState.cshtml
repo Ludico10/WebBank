@@ -27,7 +27,7 @@
             </tr>
         </tbody>
     </table>
-    </br>
+    <br />
     <h3>Касса</h3>
     <table border="1">
         <thead>
@@ -53,7 +53,7 @@
             </tr>
         </tbody>
     </table>
-    </br>
+    <br />
     <h3>Клиентские текущие счета</h3>
     <table border="1">
         <thead>
@@ -93,7 +93,7 @@
             }
         </tbody>
     </table>
-    </br>
+    <br />
     <h3>Клиентские процентные счета</h3>
     <table border="1">
         <thead>
@@ -133,7 +133,7 @@
             }
         </tbody>
     </table>
-    </br>
+    <br />
     <h2>Транзакции</h2>
     <table border="1">
         <thead>
@@ -193,8 +193,10 @@
 
 @section Footer {
     @Model.SystemDate
-    <form method="post">
-        <input type="submit" value="+" />
-        <input type="number" name="dateDif" />
+    <br />
+    <form method="post" class="parent" style="width: 5rem">
+        <label for="dateDif" class="child">Число дней для пропуска</label>
+        <input id="dateDif" class="form-control child" type="number" name="dateDif" required min="1" />
+        <input type="submit" value="Отправить" class="btn btn-primary child" />
     </form>
 }

@@ -22,7 +22,7 @@ namespace WebBank.Pages
         public string ContractName { get; set; } = string.Empty;
 
         [BindProperty]
-        public double StartPayment { get; set; } = 0;
+        public decimal StartPayment { get; set; } = 0;
 
         [BindProperty]
         public int? ChoosenProgram { get; set; }

@@ -1,8 +1,7 @@
-﻿namespace WebBank.AppCore.Interfaces
+﻿namespace WebBank.AppCore.Interfaces;
+
+public interface ITimeService
 {
-    public interface ITimeService
-    {
-        public DateOnly GetSystemDate();
-        public Task SkipDays(int count);
-    }
+    public DateOnly GetSystemDate();
+    public Task SkipDays(int count);
 }

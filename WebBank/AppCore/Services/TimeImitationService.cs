@@ -29,18 +29,20 @@ namespace WebBank.AppCore.Services
 
         ~TimeImitationService()
         {
-            var lastVisitInfo = _context.SystemInformation.FirstOrDefault(si => si.Name == "LastVisitTime");
-            if (lastVisitInfo != null)
+            try
             {
-                lastVisitInfo.Value = sysTime.ToString();
+                var lastVisitInfo = _context.SystemInformation.FirstOrDefault(si => si.Name == "LastVisitTime");
+                if (lastVisitInfo != null)
+                    lastVisitInfo.Value = sysTime.ToString();
+                _context.SaveChanges();
             }
-            _context.SaveChanges();
+            catch
+            {
+                // Ignore
+            }
         }
 
-        public DateOnly GetSystemDate()
-        {
-            return new DateOnly(sysTime.Year, sysTime.Month, sysTime.Day);
-        }
+        public DateOnly GetSystemDate() => DateOnly.FromDateTime(sysTime);
 
         public async Task SkipDays(int count)
         {
@@ -68,7 +70,6 @@ namespace WebBank.AppCore.Services
 
         private void SkipDays(DateTime fromDate)
         {
-            var count = (sysTime - fromDate).Days;
             while (sysTime.Date.CompareTo(fromDate.Date) > 0)
             {
                 //внос клиентами платежей по кредитам
@@ -84,11 +85,6 @@ namespace WebBank.AppCore.Services
                 //начисление процентов в 00:00
                 _depositService.Process(fromDate.Date).Wait();
             }
-
-            var timeInfo = _context.SystemInformation.FirstOrDefault(si => si.Name == "TimeDifference");
-            if (timeInfo != null)
-                timeInfo.Value = (Convert.ToInt32(timeInfo.Value) + count).ToString();
-            _context.SaveChanges();
         }
     }
 }
