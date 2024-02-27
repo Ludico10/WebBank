@@ -9,7 +9,7 @@ public class MySQLContext : DbContext
 
     public MySQLContext()
     {
-        //Database.EnsureDeleted();
+        Database.EnsureDeleted();
         Database.EnsureCreated();
     }
 
