@@ -82,7 +82,7 @@ public class DepositService(MySQLContext context) : AccountService(context), IDe
         var daysCount = DateTime.IsLeapYear(systemDate.Year) ? 366.0m : 365.0m;
         foreach (var deposit in await _context.ClientDeposits.Where(d => d.IsActive).ToListAsync())
         {
-            if (deposit.EndDate.Date.CompareTo(systemDate.Date) > 0)
+            if (deposit.EndDate.Date.CompareTo(systemDate.Date) >= 0)
             {
                 var incValue = deposit.InitialAmount * deposit.Program.Percent / daysCount / 100.0m;
                 //начисление процентов по депозиту
@@ -95,15 +95,16 @@ public class DepositService(MySQLContext context) : AccountService(context), IDe
     {
         foreach (var deposit in await _context.ClientDeposits.Where(d => d.IsActive).ToListAsync())
         {
-            await InterestWithdrawal(deposit, sysDate);
+            if (!deposit.Program.IsRevocable
+                || (deposit.Program.PercentAccessPeriod != null
+                    && deposit.LastAccess.Date.AddDays(deposit.Program.PercentAccessPeriod.Value) <= sysDate))
+                await InterestWithdrawal(deposit, sysDate);
         }
     }
 
     public async Task InterestWithdrawal(ClientDeposit deposit, DateTime time)
     {
-        bool irrevocableCondition = deposit.Program.IsRevocable &&
-                                    deposit.Program.PercentAccessPeriod != null &&
-                                    deposit.LastAccess.Date.AddDays(deposit.Program.PercentAccessPeriod.Value) <= time.Date;
+        bool irrevocableCondition = deposit.Program.IsRevocable;
 
         if (deposit.IsActive && deposit.LastAccess.Date.CompareTo(time.Date) < 0 &&
             (deposit.EndDate.Date.CompareTo(time.Date) <= 0 || irrevocableCondition))
@@ -122,17 +123,16 @@ public class DepositService(MySQLContext context) : AccountService(context), IDe
     public async Task DailyCompletion(DateTime systemDate)
     {
         foreach (var deposit in await _context.ClientDeposits.Where(d => d.IsActive).ToListAsync())
-        {
-            await Completion(deposit, systemDate);
-        }
+            if (deposit.EndDate.Date <= systemDate.Date)
+                await Completion(deposit, systemDate);
     }
 
     public async Task Completion(ClientDeposit deposit, DateTime time)
     {
-        if (!deposit.IsActive || (!deposit.Program.IsRevocable && deposit.EndDate.Date.CompareTo(time.Date) > 0))
-        {
+        if (!deposit.IsActive
+            || !deposit.Program.IsRevocable && deposit.EndDate.Date > time.Date)
             return;
-        }
+
         await InterestWithdrawal(deposit, time);
         //окончание депозита
         await MakeTransaction(DevelopmentFund, true, deposit.CurrentAccount, false, time, deposit.InitialAmount);
