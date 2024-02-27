@@ -111,7 +111,7 @@ namespace WebBank.AppCore.Services
 
         public async Task Completion(ClientDeposit deposit, DateTime time)
         {
-            if (!deposit.IsActive || !deposit.Program.IsRevocable && deposit.EndDate.Date.CompareTo(time.Date) > 0)
+            if (!deposit.IsActive || (!deposit.Program.IsRevocable && deposit.EndDate.Date.CompareTo(time.Date) > 0))
             {
                 return;
             }

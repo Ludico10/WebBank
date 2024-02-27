@@ -6,13 +6,11 @@ using WebBank.Infrastructure.Data;
 
 namespace WebBank.Pages
 {
-    public class AccountsStateModel(MySQLContext context, IDepositService depositService, ITimeService timeService) : PageModel
+    public class AccountsStateModel(MySQLContext context,
+        IDepositService depositService,
+        ITimeService timeService) : PageModel
     {
-        private readonly IDepositService _depositService = depositService;
-        private readonly MySQLContext _context = context;
-        private readonly ITimeService _timeService = timeService;
-
-        public DateOnly SystemDate { get; } = timeService.GetSystemDate();
+        public DateOnly SystemDate => timeService.GetSystemDate();
         public BankAccount CashAccount { get; } = depositService.CashAccount;
         public BankAccount FundAccount { get; } = depositService.DevelopmentFund;
         public List<BankAccount> CurrentAccounts { get; set; } = [];
@@ -21,8 +19,8 @@ namespace WebBank.Pages
 
         public string FindOwner(BankAccount account, bool isCurrentAccount)
         {
-            var deposit = _context.ClientDeposits.First(cd => 
-                        (isCurrentAccount && cd.CurrentAccount.Id == account.Id) || 
+            var deposit = context.ClientDeposits.First(cd =>
+                        (isCurrentAccount && cd.CurrentAccount.Id == account.Id) ||
                         (!isCurrentAccount && cd.PercentAccount.Id == account.Id));
 
             return deposit == null
@@ -32,9 +30,9 @@ namespace WebBank.Pages
 
         public void OnGetAsync()
         {
-            CurrentAccounts = _context.BankAccounts.Where(ba => ba.Type == AccountType.Current).ToList();
-            PercentAccounts = _context.BankAccounts.Where(ba => ba.Type == AccountType.Percent).ToList();
-            Transactions = _context.Transactions.OrderBy(t => t.Time).ToList();
+            CurrentAccounts = context.BankAccounts.Where(ba => ba.Type == AccountType.Current).ToList();
+            PercentAccounts = context.BankAccounts.Where(ba => ba.Type == AccountType.Percent).ToList();
+            Transactions = context.Transactions.OrderBy(t => t.Time).ToList();
         }
 
         public async Task<IActionResult> OnPostAsync(int dateDif)
@@ -42,7 +40,7 @@ namespace WebBank.Pages
             if (dateDif < 0)
                 return RedirectToPage("Error");
 
-            await _timeService.SkipDays(dateDif);
+            await timeService.SkipDays(dateDif);
             return Page();
         }
     }
