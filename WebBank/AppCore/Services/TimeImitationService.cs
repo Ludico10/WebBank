@@ -11,7 +11,10 @@ namespace WebBank.AppCore.Services
 
         public DateTime sysTime;
 
-        public TimeImitationService(MySQLContext context, IDepositService depositService, ICreditService creditService)
+        public TimeImitationService(
+            MySQLContext context,
+            IDepositService depositService,
+            ICreditService creditService)
         {
             _creditService = creditService;
             _depositService = depositService;
@@ -23,7 +26,8 @@ namespace WebBank.AppCore.Services
             if (lastVisitInfo != null && lastVisitInfo.Value != null)
             {
                 DateTime lastVisit = DateTime.Parse(lastVisitInfo.Value);
-                SkipDays(lastVisit);
+                // TODO: Разобраться
+                //SkipDays(lastVisit);
             }
         }
 

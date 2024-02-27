@@ -59,11 +59,11 @@ public class CreditProgramModel(
         var sysTime = new DateTime(SystemDate.Year, SystemDate.Month, SystemDate.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
         if (ContractName != null && ContractName != string.Empty)
         {
-            await creditService.Create(client, program, Convert.ToInt32(Amount * 100), sysTime, ContractName);
+            await creditService.Create(client, program, Amount, sysTime, ContractName);
         }
         else
         {
-            await creditService.Create(client, program, Convert.ToInt32(Amount * 100), sysTime);
+            await creditService.Create(client, program, Amount, sysTime);
         }
         return RedirectToPage("ClientPrograms", new { id = ClientId });
     }

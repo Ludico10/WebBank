@@ -26,15 +26,32 @@ public class CreditService(MySQLContext context) : AccountService(context), ICre
         return page;
     }
 
-    public async Task Create(Client client, CreditProgram program, int amount, DateTime sysTime, string name = "Безымянный")
+    public async Task Create(
+        Client client,
+        CreditProgram program,
+        decimal amount,
+        DateTime sysTime,
+        string name = "Безымянный")
     {
         if (amount < program.MinimumPayment || amount > program.MaximumPayment)
         {
             return;
         }
-        BankAccount curAccount = new() { Currency = program.Currency, Name = name + "_текущий", Number = GetFreeNumber("3014"), Type = AccountType.Current };
+        BankAccount curAccount = new()
+        {
+            Currency = program.Currency,
+            Name = name + "_текущий",
+            Number = GetFreeNumber("3014"),
+            Type = AccountType.Current
+        };
         await _context.BankAccounts.AddAsync(curAccount);
-        BankAccount percAccount = new() { Currency = program.Currency, Name = name + "_процентный", Number = GetFreeNumber("2400"), Type = AccountType.Percent };
+        BankAccount percAccount = new()
+        {
+            Currency = program.Currency,
+            Name = name + "_процентный",
+            Number = GetFreeNumber("2400"),
+            Type = AccountType.Percent
+        };
         await _context.BankAccounts.AddAsync(percAccount);
         ClientCredit credit = new()
         {

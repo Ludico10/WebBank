@@ -11,10 +11,17 @@ public class AccountsStateModel(MySQLContext context,
     ITimeService timeService) : PageModel
 {
     public DateOnly SystemDate => timeService.GetSystemDate();
-    public BankAccount CashAccount { get; } = depositService.CashAccount;
-    public BankAccount FundAccount { get; } = depositService.DevelopmentFund;
-    public List<BankAccount> Accounts { get; set; } = [];
-    public List<Transaction> Transactions { get; set; } = [];
+    public BankAccount CashAccount => depositService.CashAccount;
+    public BankAccount FundAccount => depositService.DevelopmentFund;
+    public List<BankAccount> Accounts => context
+        .BankAccounts
+        .Where(ba => ba.Type == AccountType.Percent || ba.Type == AccountType.Current)
+        .ToList();
+    public List<Transaction> Transactions => context
+        .Transactions
+        .OrderByDescending(t => t.Time)
+        .ThenByDescending(t => t.Id)
+        .ToList();
 
     public string FindOwner(BankAccount account, bool isCurrentAccount)
     {
@@ -27,12 +34,7 @@ public class AccountsStateModel(MySQLContext context,
             : deposit.Client.Surname + " " + deposit.Client.Name + " " + deposit.Client.Patronymic;
     }
 
-    public void OnGet()
-    {
-        Accounts = [.. context.BankAccounts
-            .Where(ba => ba.Type == AccountType.Percent || ba.Type == AccountType.Current)];
-        Transactions = [.. context.Transactions.OrderBy(t => t.Time)];
-    }
+    public IActionResult OnGet() => Page();
 
     public async Task<IActionResult> OnPostAsync(int dateDif)
     {
