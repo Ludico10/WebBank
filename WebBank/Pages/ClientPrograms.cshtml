@@ -10,6 +10,7 @@
             <tr>
                 <th>Название программы</th>
                 <th>Процентная ставка</th>
+                <th>Внесенная сумма</th>
                 <th>Валюта</th>
                 <th>Дата начала</th>
                 <th>Дата окончания</th>
@@ -31,6 +32,7 @@
                     <tr>
                         <td>@deposit.Program.Name</td>
                         <td>@deposit.Program.Percent</td>
+                        <td>@deposit.InitialAmount</td>
                         <td>@deposit.Program.Currency.Notation</td>
                         <td>@deposit.StartDate</td>
                         <td>@deposit.EndDate</td>
@@ -72,7 +74,7 @@
     <hr />
     <div class="pagination-container">
         Страницы:
-        <a href="/Index/1" class=@(Model.DepositPage == 1 ? "disabled" : "")>1</a>
+        <a href="/ClientPrograms/@Model.ClientId?depositPage=1&creditPage=@Model.CreditPage" class=@(Model.DepositPage == 1 ? "disabled" : "")>1</a>
         @if (Model.DepositPagesCount > 7)
         {
             if (Model.DepositPage > 4)
@@ -82,7 +84,10 @@
                 {
                     for (int i = -1; i <= 1; i++)
                     {
-                        <a href="/Index/@(i + Model.DepositPage)" class=@(Model.DepositPage == i + Model.DepositPage ? "disabled" : "")>@(i + Model.DepositPage)</a>
+                        <a href="/ClientPrograms/@Model.ClientId?depositPage=@(i + Model.DepositPage)&creditPage=@Model.CreditPage" 
+                           class=@(Model.DepositPage == i + Model.DepositPage ? "disabled" : "")>
+                            @(i + Model.DepositPage)
+                        </a>
                     }
                     <label>...</label>
                 }
@@ -90,26 +95,41 @@
                 {
                     for (int i = Model.DepositPagesCount - 4; i < Model.DepositPagesCount; i++)
                     {
-                        <a href="/Index/@i" class=@(Model.DepositPage == i ? "disabled" : "")>@i</a>
+                        <a href="/ClientPrograms/@Model.ClientId?depositPage=@i&creditPage=@Model.CreditPage" 
+                           class=@(Model.DepositPage == i ? "disabled" : "")>
+                            @i
+                        </a>
                     }
                 }
             }
             else
             {
-                <a href="/Index/2" class=@(Model.DepositPage == 2 ? "disabled" : "")>2</a>
+                <a href="/ClientPrograms/@Model.ClientId?depositPage=2&creditPage=@Model.CreditPage" 
+                   class=@(Model.DepositPage == 2 ? "disabled" : "")>
+                    2
+                </a>
                 for (int i = 3; i <= 5; i++)
                 {
-                    <a href="/Index/@i" class=@(Model.DepositPage == i ? "disabled" : "")>@i</a>
+                    <a href="/ClientPrograms/@Model.ClientId?depositPage=@i&creditPage=@Model.CreditPage" 
+                       class=@(Model.DepositPage == i ? "disabled" : "")>
+                        @i
+                    </a>
                 }
                 <label>...</label>
             }
-            <a href="/Index/@Model.DepositPagesCount" class=@(Model.DepositPage == Model.DepositPagesCount ? "disabled" : "")>@Model.DepositPagesCount</a>
+            <a href="/ClientPrograms/@Model.ClientId?depositPage=@Model.DepositPagesCount&creditPage=@Model.CreditPage" 
+               class=@(Model.DepositPage == Model.DepositPagesCount ? "disabled" : "")>
+                @Model.DepositPagesCount
+            </a>
         }
         else
         {
             for (int i = 2; i <= Model.DepositPagesCount; i++)
             {
-                <a href="/ClientProgram/@Model.ClientId?depositPage=@i" class=@(Model.DepositPage == i ? "disabled" : "")>@i</a>
+                <a href="/ClientPrograms/@Model.ClientId?depositPage=@i&creditPage=@Model.CreditPage" 
+                   class=@(Model.DepositPage == i ? "disabled" : "")>
+                    @i
+                </a>
             }
         }
     </div>
@@ -119,6 +139,132 @@
     </div>
     <hr />
     <h3 class="text-center">Кредитные программы</h3>
+    <table border="1" style="margin: 0 auto;">
+        <thead>
+            <tr>
+                <th>Название программы</th>
+                <th>Процентная ставка</th>
+                <th>Сумма кредита</th>
+                <th>Валюта</th>
+                <th>Дата начала</th>
+                <th>Дата окончания</th>
+                <th>Тип кредита</th>
+                <th>Количество платежей</th>
+                <th>Номер текущего счета</th>
+                <th>Название текущего счета</th>
+                <th>Остаток текущего счета</th>
+                <th>Номер процентного счета</th>
+                <th>Название процентного счета</th>
+                <th>Остаток процентного счета</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Credits.Any())
+            {
+                @foreach (var credit in Model.Credits)
+                {
+                    <tr>
+                        <td>@credit.Program.Name</td>
+                        <td>@credit.Program.Percent</td>
+                        <td>@credit.Amount</td>
+                        <td>@credit.Program.Currency.Notation</td>
+                        <td>@credit.StartDate</td>
+                        <td>@(credit.StartDate.AddDays(credit.Program.Period * credit.Program.PaymentCount))</td>
+                        <td>@(credit.Program.IsDifferentiated ? "дифференцированный" : "ауаннуитетный")</td>
+                        <td>@credit.Program.PaymentCount</td>
+                        <td>@credit.CurrentAccount.Number</td>
+                        <td>@credit.CurrentAccount.Name</td>
+                        <td>@(credit.CurrentAccount.Credit - credit.CurrentAccount.Debet)</td>
+                        <td>@credit.PercentAccount.Number</td>
+                        <td>@credit.PercentAccount.Name</td>
+                        <td>@(credit.PercentAccount.Credit - credit.PercentAccount.Debet)</td>
+                        <td>
+                            <div class="parent">
+                                <form method="post">
+                                    <a class="child" asp-page="CreditSchedule" asp-route-id="@credit.Id">
+                                        <img src="~/images/list.png" alt="Просмотреть" class="icon" />
+                                    </a>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="21"><h3>Нет кредитов</h3></td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+    <hr />
+    <div class="pagination-container">
+        Страницы:
+        <a href="/ClientPrograms/@Model.ClientId?depositPage=@Model.DepositPage&creditPage=1" class=@(Model.CreditPage == 1 ? "disabled" : "")>1</a>
+        @if (Model.CreditPagesCount > 7)
+        {
+            if (Model.CreditPage > 4)
+            {
+                <label>...</label>
+                if (Model.CreditPage < Model.CreditPagesCount - 3)
+                {
+                    for (int i = -1; i <= 1; i++)
+                    {
+                        <a href="/ClientPrograms/@Model.ClientId?depositPage=@Model.DepositPage&creditPage=@(i + Model.CreditPage)" 
+                           class=@(Model.CreditPage == i + Model.CreditPage ? "disabled" : "")>
+                            @(i + Model.CreditPage)
+                        </a>
+                    }
+                    <label>...</label>
+                }
+                else
+                {
+                    for (int i = Model.CreditPagesCount - 4; i < Model.CreditPagesCount; i++)
+                    {
+                        <a href="/ClientPrograms/@Model.ClientId?depositPage=@Model.DepositPage&creditPage=@i" 
+                           class=@(Model.CreditPage == i ? "disabled" : "")>
+                            @i
+                        </a>
+                    }
+                }
+            }
+            else
+            {
+                <a href="/ClientPrograms/@Model.ClientId?depositPage=@Model.DepositPage&creditPage=2" 
+                   class=@(Model.CreditPage == 2 ? "disabled" : "")>
+                    2
+                </a>
+                for (int i = 3; i <= 5; i++)
+                {
+                    <a href="/ClientPrograms/@Model.ClientId?depositPage=@Model.DepositPage&creditPage=@i" 
+                       class=@(Model.CreditPage == i ? "disabled" : "")>
+                        @i
+                    </a>
+                }
+                <label>...</label>
+            }
+            <a href="/ClientPrograms/@Model.ClientId?depositPage=@Model.DepositPage&creditPage=@Model.CreditPagesCount" 
+               class=@(Model.CreditPage == Model.CreditPagesCount ? "disabled" : "")>
+                @Model.CreditPagesCount
+            </a>
+        }
+        else
+        {
+            for (int i = 2; i <= Model.CreditPagesCount; i++)
+            {
+                <a href="/ClientPrograms/@Model.ClientId?depositPage=@Model.DepositPage&creditPage=@i" 
+                   class=@(Model.CreditPage == i ? "disabled" : "")>
+                    @i
+                </a>
+            }
+        }
+    </div>
+    <hr />
+    <div>
+        <a href="/CreditContract?clientId=@Model.ClientId" class="btn btn-outline-dark" role="button"> Добавить</a>
+    </div>
 </div>
 
 @section Footer {

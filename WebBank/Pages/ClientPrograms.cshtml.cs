@@ -7,10 +7,11 @@ using static System.Math;
 
 namespace WebBank.Pages
 {
-    public class ClientProgramsModel(MySQLContext context, IDepositService depositService, ITimeService timeService) : PageModel
+    public class ClientProgramsModel(MySQLContext context, IDepositService depositService, ICreditService creditService, ITimeService timeService) : PageModel
     {
         private readonly MySQLContext _context = context;
         private readonly IDepositService _depositService = depositService;
+        private readonly ICreditService _creditService = creditService;
 
         private const int itemsOnPage = 10;
 
@@ -20,8 +21,11 @@ namespace WebBank.Pages
         public List<ClientDeposit> Deposits { get; private set; } = [];
         public int DepositPage { get; set; }
         public int DepositPagesCount { get; set; }
+        public List<ClientCredit> Credits { get; private set; } = [];
+        public int CreditPage { get; set; }
+        public int CreditPagesCount { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int id, int depositPage = 1)
+        public async Task<IActionResult> OnGetAsync(int id, int depositPage = 1, int creditPage = 1)
         {
             ClientId = id;
             DepositPage = depositPage;
@@ -29,6 +33,15 @@ namespace WebBank.Pages
             DepositPagesCount = (int)Max(Ceiling((double)depositsCount / itemsOnPage), 1);
 
             if (depositPage <= 0 || depositPage > DepositPagesCount)
+            {
+                return NotFound();
+            }
+
+            CreditPage = creditPage;
+            var creditsCount = await _creditService.ClientCreditsCount(creditPage);
+            CreditPagesCount = (int)Max(Ceiling((double)creditsCount / itemsOnPage), 1);
+
+            if (creditPage <= 0 || creditPage > CreditPagesCount)
             {
                 return NotFound();
             }
@@ -41,6 +54,7 @@ namespace WebBank.Pages
             ClientName = client.Surname + " " + client.Name + " " + client.Patronymic;
 
             Deposits = await _depositService.GetClientPage(id, depositPage, itemsOnPage);
+            Credits = await _creditService.GetClientPage(id, creditPage, itemsOnPage);
             return Page();
         }
 

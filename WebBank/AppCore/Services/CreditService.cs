@@ -9,6 +9,25 @@ namespace WebBank.AppCore.Services
     {
         public CreditService(MySQLContext context) : base(context) { }
 
+        public async Task<int> ClientCreditsCount(int clientId)
+        {
+            return await _context.ClientCredits
+                    .Where(cc => cc.Client.Id == clientId && cc.IsActive)
+                    .CountAsync();
+        }
+
+        public async Task<List<ClientCredit>> GetClientPage(int clientId, int pageNumber, int itemsOnPage)
+        {
+            var page = await _context.ClientCredits
+                        .OrderBy(cc => cc.StartDate)
+                        .Where(cc => cc.IsActive && cc.Client.Id == clientId)
+                        .Skip(itemsOnPage * (pageNumber - 1))
+                        .Take(itemsOnPage)
+                        .ToListAsync();
+
+            return page;
+        }
+
         public async Task Create(Client client, CreditProgram program, int amount, DateTime sysTime, string name = "Безымянный")
         {
             if (amount >= program.MinimumPayment && amount <= program.MaximumPayment)
@@ -51,9 +70,9 @@ namespace WebBank.AppCore.Services
                 var daysInYear = DateTime.IsLeapYear(date.Year) ? 366.0 : 365.0;
                 var m = credit.Program.Percent * paymentPeriod / daysInYear / 100.0;
 
-                int paymentAmount = 0;
-                int bodyAmount = 0;
-                int percentAmount = 0;
+                int paymentAmount;
+                int bodyAmount;
+                int percentAmount;
                 if (credit.Program.IsDifferentiated)
                 {
                     bodyAmount = Convert.ToInt32((double)credit.Amount / credit.Program.PaymentCount);
@@ -98,11 +117,11 @@ namespace WebBank.AppCore.Services
             var sysDate = new DateOnly(sysTime.Year, sysTime.Month, sysTime.Day);
             foreach (var schedule in await _context.Schedules.Where(s => s.Date == sysDate).ToListAsync())
             {
-                await PeriodRepayment(schedule, sysTime);
+                await PeriodRepayment(schedule, sysTime, sysDate);
             }
         }
 
-        public async Task PeriodRepayment(CreditSchedule schedule, DateTime time)
+        public async Task PeriodRepayment(CreditSchedule schedule, DateTime time, DateOnly date)
         {
             if (schedule.PaymentTime == null)
             {
@@ -118,6 +137,11 @@ namespace WebBank.AppCore.Services
                 await MakeTransaction(schedule.Credit.CurrentAccount, false, DevelopmentFund, false, time, schedule.BodyAmount);
 
                 schedule.PaymentTime = time;
+                var laterRepayment = await _context.Schedules.FirstOrDefaultAsync(s => s.Date > date && s.PaymentTime == null);
+                if (laterRepayment == null) 
+                {
+                    schedule.Credit.IsActive = false;
+                }
                 await _context.SaveChangesAsync();
             }
         }

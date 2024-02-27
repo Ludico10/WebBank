@@ -5,11 +5,11 @@ namespace WebBank.Infrastructure.Data;
 
 public class MySQLContext : DbContext
 {
-    public readonly string dbPath = "server=localhost;database=bank_db;user=root;password=";
+    public readonly string dbPath = "server=localhost;database=bank_db;user=root;password=Phabletik1044";
 
     public MySQLContext()
     {
-        //Database.EnsureDeleted();
+        Database.EnsureDeleted();
         Database.EnsureCreated();
     }
 

@@ -1,0 +1,65 @@
+﻿@page
+@model WebBank.Pages.CreditProgramModel
+<div class="container">
+    <h1 class="text-center">Открытие кредита на имя @Model.ClientName</h1>
+    <hr />
+    <form method="post">
+        <input asp-for="ClientId" value="@Model.ClientId" type="hidden" />
+        <div>
+            <h2>Кредитная программа</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Название</th>
+                        <th>Тип</th>
+                        <th>Длительность,<span class="text-nowrap">дней</span></th>
+                        <th>Количество взносов</th>
+                        <th>Ставка,<span class="text-nowrap">% годовых</span></th>
+                        <th>Валюта</th>
+                        <th>Минималный взнос</th>
+                        <th>Максимальный взнос</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.CreditPrograms.Any())
+                    {
+                        @foreach (var program in Model.CreditPrograms)
+                        {
+                            <tr>
+                                <td><input type="radio" asp-for="ChoosenProgram" value="@program.Id" /></td>
+                                <td>@program.Name</td>
+                                <td>@(program.IsDifferentiated ? "Дифференцированный" : "Ауаннуитетный")</td>
+                                <td>@program.Period</td>
+                                <td>@program.PaymentCount</td>
+                                <td>@program.Percent</td>
+                                <td>@program.Currency.Notation</td>
+                                <td>@program.MinimumPayment</td>
+                                <td>@program.MaximumPayment</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="21"><h3>Нет доступных программ</h3></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        </br>
+        <div>
+            <label asp-for="ContractName">Название счета</label>
+            <input asp-for="ContractName" />
+        </div>
+        </br>
+        <div>
+            <label asp-for="Amount">Сумма кредита<span class="required-asterisk">*</span></label>
+            <input asp-for="Amount" type="number" />
+        </div>
+        <div class="text-center">
+            <input type="submit" value="Сохранить" />
+        </div>
+    </form>
+</div>

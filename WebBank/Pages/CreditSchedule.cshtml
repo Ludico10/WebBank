@@ -1,0 +1,33 @@
+﻿@page "{creditId:int}"
+@model WebBank.Pages.CreditScheduleModel
+<div class="text-center">
+    <h2>График платежей по кредиту</h2>
+    <table border="1" style="margin: 0 auto;">
+        <thead>
+            <tr>
+                <th>Время уплаты</th>
+                <th>Срок уплаты</th>
+                <th>Остаток долга</th>
+                <th>Сумма взноса</th>
+                <th>В счет основного долга</th>
+                <th>В качестве процентов</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Schedule.Any())
+            {
+                @foreach (var schedule in Model.Schedule)
+                {
+                    <tr>
+                        <td>@(schedule.PaymentTime != null ? schedule.PaymentTime : "-")</td>
+                        <td>@schedule.Date</td>
+                        <td>@schedule.CreditBalance</td>
+                        <td>@schedule.PaymentAmount</td>
+                        <td>@schedule.BodyAmount</td>
+                        <td>@schedule.PercentAmount</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
