@@ -2,8 +2,9 @@
 @model WebBank.Pages.AccountsStateModel
 <div class="text-center">
     <h2>Состояние счетов</h2>
-    <h3>Фонд развития банка</h3>
-    <table border="1">
+    <hr />
+    <h3>Системные счета</h3>
+    <table>
         <thead>
             <tr>
                 <th>ID</th>
@@ -21,41 +22,24 @@
                 <td>@Model.FundAccount.Number</td>
                 <td>@Model.FundAccount.Name</td>
                 <td>@Model.FundAccount.Currency.Notation</td>
-                <td>@Model.FundAccount.Debet</td>
-                <td>@Model.FundAccount.Credit</td>
-                <td>@(Model.FundAccount.Credit - Model.FundAccount.Debet)</td>
+                <td>@($"{Model.FundAccount.Debet:f4}")</td>
+                <td>@($"{Model.FundAccount.Credit:f4}")</td>
+                <td>@($"{Model.FundAccount.Credit - Model.FundAccount.Debet:f4}")</td>
             </tr>
-        </tbody>
-    </table>
-    <br />
-    <h3>Касса</h3>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Номер</th>
-                <th>Наименование</th>
-                <th>Валюта</th>
-                <th>Дебет</th>
-                <th>Кредит</th>
-                <th>Сальдо</th>
-            </tr>
-        </thead>
-        <tbody>
             <tr>
                 <td>@Model.CashAccount.Id</td>
                 <td>@Model.CashAccount.Number</td>
                 <td>@Model.CashAccount.Name</td>
                 <td>@Model.CashAccount.Currency.Notation</td>
-                <td>@Model.CashAccount.Debet</td>
-                <td>@Model.CashAccount.Credit</td>
-                <td>@(Model.CashAccount.Debet - Model.CashAccount.Credit)</td>
+                <td>@($"{Model.CashAccount.Debet:f4}")</td>
+                <td>@($"{Model.CashAccount.Credit:f4}")</td>
+                <td>@($"{Model.CashAccount.Debet - Model.CashAccount.Credit:f4}")</td>
             </tr>
         </tbody>
     </table>
-    <br />
-    <h3>Клиентские текущие счета</h3>
-    <table border="1">
+    <hr />
+    <h3>Клиентские счета</h3>
+    <table>
         <thead>
             <tr>
                 <th>ID</th>
@@ -69,19 +53,19 @@
             </tr>
         </thead>
         <tbody>
-            @if (Model.CurrentAccounts.Any())
+            @if (Model.Accounts.Any())
             {
-                @foreach (var account in Model.CurrentAccounts)
+                @foreach (var account in Model.Accounts)
                 {
                     <tr>
                         <td>@account.Id</td>
                         <td>@account.Number</td>
                         <td>@account.Name</td>
-                        <td>@Model.FindOwner(account, true)</td>
+                        <td>@Model.FindOwner(account, account.Type == AppCore.Entities.AccountType.Current)</td>
                         <td>@account.Currency.Notation</td>
-                        <td>@account.Debet</td>
-                        <td>@account.Credit</td>
-                        <td>@(account.Credit - account.Debet)</td>
+                        <td>@($"{account.Debet:f4}")</td>
+                        <td>@($"{account.Credit:f4}")</td>
+                        <td>@($"{account.Credit - account.Debet:f4}")</td>
                     </tr>
                 }
             }
@@ -93,49 +77,9 @@
             }
         </tbody>
     </table>
-    <br />
-    <h3>Клиентские процентные счета</h3>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Номер</th>
-                <th>Наименование</th>
-                <th>Владелец</th>
-                <th>Валюта</th>
-                <th>Дебет</th>
-                <th>Кредит</th>
-                <th>Сальдо</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model.PercentAccounts.Any())
-            {
-                @foreach (var account in Model.PercentAccounts)
-                {
-                    <tr>
-                        <td>@account.Id</td>
-                        <td>@account.Number</td>
-                        <td>@account.Name</td>
-                        <td>@Model.FindOwner(account, false)</td>
-                        <td>@account.Currency.Notation</td>
-                        <td>@account.Debet</td>
-                        <td>@account.Credit</td>
-                        <td>@(account.Credit - account.Debet)</td>
-                    </tr>
-                }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="21"><h3>Нет счетов</h3></td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <br />
+    <hr />
     <h2>Транзакции</h2>
-    <table border="1">
+    <table>
         <thead>
             <tr>
                 <th>ID</th>
@@ -156,7 +100,7 @@
                     <tr>
                         <td>@transaction.Id</td>
                         <td>@transaction.Time</td>
-                        <td>@transaction.Amount</td>
+                        <td>@($"{transaction.Amount:f4}")</td>
                         <td>@transaction.Currency.Notation</td>
                         @if (transaction.FromAccount != null)
                         {
@@ -196,7 +140,7 @@
     <br />
     <form method="post" class="parent" style="width: 5rem">
         <label for="dateDif" class="child">Число дней для пропуска</label>
-        <input id="dateDif" class="form-control child" type="number" name="dateDif" required min="1" />
+        <input id="dateDif" class="form-control child" type="number" name="dateDif" required min="1" value="1" />
         <input type="submit" value="Отправить" class="btn btn-primary child" />
     </form>
 }
