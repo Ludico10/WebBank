@@ -5,7 +5,7 @@
     <h1 class="text-center">Программы пользователя @Model.ClientName</h1>
     <hr />
     <h3 class="text-center">Депозитные программы</h3>
-    <table border="1" style="margin: 0 auto;">
+    <table>
         <thead>
             <tr>
                 <th>Название программы</th>
@@ -140,7 +140,7 @@
     </div>
     <hr />
     <h3 class="text-center">Кредитные программы</h3>
-    <table border="1" style="margin: 0 auto;">
+    <table>
         <thead>
             <tr>
                 <th>Название программы</th>
@@ -171,7 +171,7 @@
                         <td>@credit.Program.Currency.Notation</td>
                         <td>@credit.StartDate</td>
                         <td>@(credit.StartDate.AddDays(credit.Program.Period * credit.Program.PaymentCount))</td>
-                        <td>@(credit.Program.IsDifferentiated ? "дифференцированный" : "ауаннуитетный")</td>
+                        <td>@(credit.Program.IsDifferentiated ? "дифференцированный" : "аннуитетный")</td>
                         <td>@credit.Program.PaymentCount</td>
                         <td>@credit.CurrentAccount.Number</td>
                         <td>@credit.CurrentAccount.Name</td>

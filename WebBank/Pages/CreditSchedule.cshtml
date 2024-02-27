@@ -2,7 +2,7 @@
 @model WebBank.Pages.CreditScheduleModel
 <div class="text-center">
     <h2>График платежей по кредиту</h2>
-    <table border="1" style="margin: 0 auto;">
+    <table>
         <thead>
             <tr>
                 <th>Время уплаты</th>
@@ -21,13 +21,17 @@
                     <tr>
                         <td>@(schedule.PaymentTime != null ? schedule.PaymentTime : "-")</td>
                         <td>@schedule.Date</td>
-                        <td>@schedule.CreditBalance</td>
-                        <td>@schedule.PaymentAmount</td>
-                        <td>@schedule.BodyAmount</td>
-                        <td>@schedule.PercentAmount</td>
+                        <td>@($"{schedule.CreditBalance:f4}")</td>
+                        <td>@($"{schedule.PaymentAmount:f4}")</td>
+                        <td>@($"{schedule.BodyAmount:f4}")</td>
+                        <td>@($"{schedule.PercentAmount:f4}")</td>
                     </tr>
                 }
             }
         </tbody>
     </table>
 </div>
+
+@section Footer {
+    @Model.SystemDate
+}

@@ -3,21 +3,21 @@
 <div class="container">
     <h1 class="text-center">Открытие кредита на имя @Model.ClientName</h1>
     <hr />
-    <form method="post">
+    <form method="post" class="needs-validation" novalidate>
         <input asp-for="ClientId" value="@Model.ClientId" type="hidden" />
-        <div>
+        <div class="text-center">
             <h2>Кредитная программа</h2>
-            <table border="1">
+            <table>
                 <thead>
                     <tr>
                         <th></th>
                         <th>Название</th>
                         <th>Тип</th>
-                        <th>Длительность,<span class="text-nowrap">дней</span></th>
+                        <th>Длительность, дни</th>
                         <th>Количество взносов</th>
                         <th>Ставка,<span class="text-nowrap">% годовых</span></th>
                         <th>Валюта</th>
-                        <th>Минималный взнос</th>
+                        <th>Минимальный взнос</th>
                         <th>Максимальный взнос</th>
                     </tr>
                 </thead>
@@ -27,15 +27,15 @@
                         @foreach (var program in Model.CreditPrograms)
                         {
                             <tr>
-                                <td><input type="radio" asp-for="ChoosenProgram" value="@program.Id" /></td>
+                                <td><input required class="form-check-input" type="radio" asp-for="ChoosenProgram" value="@program.Id" /></td>
                                 <td>@program.Name</td>
-                                <td>@(program.IsDifferentiated ? "Дифференцированный" : "Ауаннуитетный")</td>
+                                <td>@(program.IsDifferentiated ? "Дифференцированный" : "Аннуитетный")</td>
                                 <td>@program.Period</td>
                                 <td>@program.PaymentCount</td>
                                 <td>@program.Percent</td>
                                 <td>@program.Currency.Notation</td>
-                                <td>@program.MinimumPayment</td>
-                                <td>@program.MaximumPayment</td>
+                                <td>@($"{program.MinimumPayment:f4}")</td>
+                                <td>@($"{program.MaximumPayment:f4}")</td>
                             </tr>
                         }
                     }
@@ -48,18 +48,23 @@
                 </tbody>
             </table>
         </div>
-        </br>
+        <br />
         <div>
             <label asp-for="ContractName">Название счета</label>
-            <input asp-for="ContractName" />
+            <input required class="form-control" asp-for="ContractName" />
         </div>
-        </br>
+        <br />
         <div>
             <label asp-for="Amount">Сумма кредита<span class="required-asterisk">*</span></label>
-            <input asp-for="Amount" type="number" />
+            <input class="form-control" asp-for="Amount" type="number" step=".01" required min="0" value="0" />
         </div>
+        <br />
         <div class="text-center">
-            <input type="submit" value="Сохранить" />
+            <input class="btn btn-outline-dark" type="submit" value="Сохранить" />
         </div>
     </form>
 </div>
+
+@section Footer {
+    @Model.SystemDate
+}

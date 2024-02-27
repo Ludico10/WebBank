@@ -54,7 +54,7 @@
         <br />
         <div>
             <label asp-for="StartPayment">Сумма начального взноса<span class="required-asterisk">*</span></label>
-            <input class="form-control" asp-for="StartPayment" type="number" step=".01" required />
+            <input class="form-control" asp-for="StartPayment" type="number" step=".01" required min="0" value="0" />
         </div>
         <br />
         <div class="text-center">
