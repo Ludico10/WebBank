@@ -7,7 +7,11 @@ using static System.Math;
 
 namespace WebBank.Pages;
 
-public class ClientProgramsModel(MySQLContext context, IDepositService depositService, ICreditService creditService, ITimeService timeService) : PageModel
+public class ClientProgramsModel(
+    MySQLContext context, 
+    IDepositService depositService, 
+    ICreditService creditService, 
+    ITimeService timeService) : PageModel
 {
     private const int itemsOnPage = 10;
 
@@ -25,7 +29,7 @@ public class ClientProgramsModel(MySQLContext context, IDepositService depositSe
     {
         ClientId = id;
         DepositPage = depositPage;
-        var depositsCount = await depositService.ClientDepositsCount(depositPage);
+        var depositsCount = await depositService.ClientDepositsCount(id);
         DepositPagesCount = (int)Max(Ceiling((double)depositsCount / itemsOnPage), 1);
 
         if (depositPage <= 0 || depositPage > DepositPagesCount)
@@ -34,7 +38,7 @@ public class ClientProgramsModel(MySQLContext context, IDepositService depositSe
         }
 
         CreditPage = creditPage;
-        var creditsCount = await creditService.ClientCreditsCount(creditPage);
+        var creditsCount = await creditService.ClientCreditsCount(id);
         CreditPagesCount = (int)Max(Ceiling((double)creditsCount / itemsOnPage), 1);
 
         if (creditPage <= 0 || creditPage > CreditPagesCount)
