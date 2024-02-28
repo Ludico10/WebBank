@@ -80,7 +80,7 @@ public class MySQLContext : DbContext
                 {
                     Id = 1,
                     Name = "Касса",
-                    Number = "0000000000009",
+                    Number = "1010000000009",
                     CurrencyId = 1,
                     Type = AccountType.Cash,
                 },
@@ -88,7 +88,7 @@ public class MySQLContext : DbContext
                 {
                     Id = 2,
                     Name = "Фонд развития",
-                    Number = "0001000000009",
+                    Number = "7327000000009",
                     CurrencyId = 1,
                     Type = AccountType.Fund,
                     Credit = 1000000000

@@ -41,7 +41,7 @@ public class CreditService(MySQLContext context) : AccountService(context), ICre
         {
             Currency = program.Currency,
             Name = name + "_текущий",
-            Number = GetFreeNumber("3014"),
+            Number = GetFreeNumber("2400"),
             Type = AccountType.Current
         };
         await _context.BankAccounts.AddAsync(curAccount);

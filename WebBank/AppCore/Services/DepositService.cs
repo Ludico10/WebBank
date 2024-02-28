@@ -50,7 +50,7 @@ public class DepositService(MySQLContext context) : AccountService(context), IDe
         {
             Currency = depositProgram.Currency,
             Name = name + "_процентный",
-            Number = GetFreeNumber("2400"),
+            Number = GetFreeNumber("3014"),
             Type = AccountType.Percent
         };
         await _context.BankAccounts.AddAsync(percAccount);
