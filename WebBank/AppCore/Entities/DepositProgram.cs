@@ -7,7 +7,7 @@ public class DepositProgram
     public int Id { get; set; }
     public required string Name { get; set; }
     public int Period { get; set; }
-    public int Percent { get; set; }
+    public decimal Percent { get; set; }
 
     [ForeignKey(nameof(Currency))]
     public int CurrencyId { get; set; }

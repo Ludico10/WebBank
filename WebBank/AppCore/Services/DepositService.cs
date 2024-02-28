@@ -37,7 +37,6 @@ public class DepositService(MySQLContext context) : AccountService(context), IDe
         {
             return;
         }
-        // TODO: проверить префиксы банковских счетов
         BankAccount curAccount = new()
         {
             Currency = depositProgram.Currency,

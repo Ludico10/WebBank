@@ -48,7 +48,7 @@ public class MySQLContext : DbContext
             .HaveColumnType($"ENUM('{nameof(Gender.Male)}', '{nameof(Gender.Female)}')");
 
         configurationBuilder.Properties<decimal>()
-            .HavePrecision(18, 4);
+            .HavePrecision(18, 5);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -151,23 +151,24 @@ public class MySQLContext : DbContext
             new()
             {
                 Id = 1,
-                Name = "1",
+                Name = "Мои условия",
                 CurrencyId = 1,
-                IsRevocable = true,
-                MinimumPayment = 1000,
-                Percent = 30,
-                Period = 365,
-                PercentAccessPeriod = 35
+                IsRevocable = false,
+                MinimumPayment = 100,
+                Percent = 9.5m,
+                Period = 100,
+                PercentAccessPeriod = 100
             },
             new()
             {
                 Id = 2,
-                Name = "2",
+                Name = "Гостеприимный",
                 CurrencyId = 1,
-                IsRevocable = false,
-                MinimumPayment = 100,
-                Percent = 50,
-                Period = 35
+                IsRevocable = true,
+                MinimumPayment = 5,
+                Percent = 3,
+                Period = 65,
+                PercentAccessPeriod = 13
             }
         ]);
 
