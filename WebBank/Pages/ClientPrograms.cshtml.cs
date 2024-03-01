@@ -13,7 +13,7 @@ public class ClientProgramsModel(
     ICreditService creditService,
     ITimeService timeService) : PageModel
 {
-    private const int itemsOnPage = 1;
+    private const int itemsOnPage = 5;
 
     public DateOnly SystemDate => timeService.GetSystemDate();
     public int ClientId { get; set; }

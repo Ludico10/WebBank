@@ -97,7 +97,7 @@ public class CreditService(MySQLContext context) : AccountService(context), ICre
             }
             else
             {
-                paymentAmount = (credit.Amount * m * (decimal)(Math.Pow((double)m + 1, credit.Program.Period) / (Math.Pow((double)m + 1.0, credit.Program.Period) - 1)));
+                paymentAmount = (credit.Amount * m / (1 - (decimal)Math.Pow((double)(1 + m), -(credit.Program.PaymentCount))));
                 percentAmount = creditBalance * m;
                 bodyAmount = paymentAmount - percentAmount;
             }

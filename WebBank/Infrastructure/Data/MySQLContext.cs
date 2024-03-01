@@ -172,6 +172,36 @@ public class MySQLContext : DbContext
             }
         ]);
 
+        modelBuilder
+            .Entity<CreditProgram>()
+            .HasData(
+        [
+            new()
+            {
+                Id = 1,
+                Name = "Испытательный",
+                Percent = 16.6m,
+                Period = 180,
+                CurrencyId = 1,
+                IsDifferentiated = false,
+                PaymentCount = 6,
+                MinimumPayment = 2000,
+                MaximumPayment = 5000
+            },
+            new()
+            {
+                Id = 2,
+                Name = "На всё про всё",
+                Percent = 10m,
+                Period = 360,
+                CurrencyId = 1,
+                IsDifferentiated = true,
+                PaymentCount = 12,
+                MinimumPayment = 2000,
+                MaximumPayment = 30000
+            }
+        ]);
+
 #if DEBUG
         // Данные, которые возможно добавить/отредактировать в приложении
         modelBuilder
