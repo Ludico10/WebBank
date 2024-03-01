@@ -29,9 +29,16 @@ public class AccountsStateModel(MySQLContext context,
                     (isCurrentAccount && cd.CurrentAccount.Id == account.Id) ||
                     (!isCurrentAccount && cd.PercentAccount.Id == account.Id));
 
-        return deposit == null
+        if (deposit != null)
+            return $"{deposit.Client.Surname} {deposit.Client.Name} {deposit.Client.Patronymic}";
+
+        var credit = context.ClientCredits.FirstOrDefault(cd =>
+                    (isCurrentAccount && cd.CurrentAccount.Id == account.Id) ||
+                    (!isCurrentAccount && cd.PercentAccount.Id == account.Id));
+
+        return credit == null
             ? throw new Exception("—чет не прив€зан к клиенту")
-            : deposit.Client.Surname + " " + deposit.Client.Name + " " + deposit.Client.Patronymic;
+            : $"{credit.Client.Surname} {credit.Client.Name} {credit.Client.Patronymic}";
     }
 
     public IActionResult OnGet() => Page();
