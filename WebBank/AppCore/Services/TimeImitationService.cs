@@ -52,6 +52,8 @@ namespace WebBank.AppCore.Services
         {
             for (int i = 0; i < count; i++)
             {
+                sysTime = new DateTime(sysTime.Year, sysTime.Month, sysTime.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+
                 //внос клиентами платежей по кредитам
                 _creditService.RepaymentInTime(sysTime).Wait();
                 //выдача клиентам средств по завершенным программам
@@ -59,7 +61,7 @@ namespace WebBank.AppCore.Services
                 //снятие клиентами набежавших по отзывным вкладам процентов
                 _depositService.DailyInterestWithdrawal(sysTime).Wait();
                 //начало нового дня
-                sysTime = sysTime.AddDays(1);
+                sysTime = sysTime.AddDays(1).Date;
                 //снятие процентов за кредиты в 00:00
                 _creditService.Process(sysTime).Wait();
                 //начисление процентов на депозиты в 00:00
