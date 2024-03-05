@@ -45,6 +45,7 @@ public class CreditService(MySQLContext context) : AccountService(context), ICre
             Type = AccountType.Current
         };
         await _context.BankAccounts.AddAsync(curAccount);
+        await _context.SaveChangesAsync();
         BankAccount percAccount = new()
         {
             Currency = program.Currency,

@@ -5,7 +5,7 @@ using WebBank.Infrastructure.Data;
 
 namespace WebBank.AppCore.Services;
 
-public class ClientService(MySQLContext context) : IClientService
+public class ClientService(MySQLContext context, IDepositService depositService, ICreditService creditService) : IClientService
 {
     public async Task<int> CountClients()
     {
@@ -28,6 +28,13 @@ public class ClientService(MySQLContext context) : IClientService
     {
         var client = await context.Clients.SingleOrDefaultAsync(c => c.Id == id);
         if (client == null) return;
+
+        int depositCount = await depositService.ClientDepositsCount(id);
+        int creditCount = await creditService.ClientCreditsCount(id);
+        if (creditCount != 0 || depositCount != 0)
+        {
+            return;
+        }
 
         client.IsActive = false;
         await context.SaveChangesAsync();
